@@ -138,7 +138,92 @@ nginx 配置源码在 `deploy/` 下（未纳入公开仓库），服务器上对
 
 ---
 
-## 五、备案通过后：把域名切成主站
+## 五、访问邮件提醒（visit-notify）
+
+有真人访问主页时，通过 `mail_for_bot@163.com` 给 `gsz199911@163.com` 发一封提醒，
+内容包含时间、IP、归属地、组织／运营商、AS、反向域名，以及**是否来自高校／科研机构**。
+
+```
+/opt/visit-notify/
+├── notify.py       # 守护进程
+├── config.json     # 含 SMTP 授权码，chmod 600，不进仓库
+└── state.json      # 去重记录 + 当日计数 + 日志读取位置
+systemd: visit-notify.service     日志: journalctl -u visit-notify -f
+```
+
+### 为什么是读日志，不是插在请求链路里
+
+读 `access.log` 与网站服务完全解耦。脚本崩了、SMTP 挂了、IP 查询超时了，
+都不会拖慢或拖垮网站本身。
+
+### 过滤是这个功能的核心
+
+公网 IP 的服务器每天被大量扫描器打——部署当天日志里就有 `zgrab`、端口探测这类请求。
+不过滤的话收件箱会被彻底淹没，163 也会因异常发信频率把账号封掉。四层过滤：
+
+| 层 | 规则 |
+|----|------|
+| 路径 | 只认 `/`、`/zh/` 等页面路径，静态资源、探测路径（`/wp-login.php` 之类）全丢 |
+| UA | 正则过滤爬虫／扫描器／命令行工具；要求带 `Mozilla` 前缀 |
+| 去重 | 同一 IP 在 `dedupe_hours`（默认 6 小时）内只提醒一次 |
+| 配额 | 每日 `daily_limit`（默认 40）封上限，保护 163 账号 |
+
+### 机构识别
+
+优先看反向 DNS 后缀（`.edu.cn` / `.ac.uk` / `.edu` 等，最可靠），
+其次匹配 ASN／组织名里的 `universit`、`institute`、`cernet`、`大学`、`研究所` 等关键词。
+命中时邮件标题会带 🎓 前缀，方便在手机上一眼区分。
+
+实测清华 IP（166.111.4.100）→ 反向域名 `www.tsinghua.edu.cn`，识别为「教育/科研域名」。
+
+### 改配置
+
+```bash
+sudo vi /opt/visit-notify/config.json     # dedupe_hours / daily_limit / mail_to
+sudo systemctl restart visit-notify
+```
+
+> 授权码只存在服务器上的 `config.json`（600 权限），未进入 Git 仓库。
+> 需要更换时在网易邮箱重新生成，改配置后重启服务即可。
+
+### ⚠️ 覆盖范围的重要限制
+
+**这个功能只统计腾讯云镜像站（IP 访问）的流量，统计不到 GitHub Pages 主站。**
+GitHub Pages 是纯静态托管，没有服务端、也拿不到访问日志。
+
+而你对外用的、要写进 CV 的地址是 `maple1999.github.io` —— 也就是说
+**绝大多数真实访问目前不会触发提醒**。两条路可以补上：
+
+1. 备案通过后域名指向腾讯云，域名成为主站，提醒自然全覆盖；
+2. 在 GitHub Pages 页面里加一个指向腾讯云的埋点请求（一行代码），
+   访问 github.io 时也会触发提醒。代价是给公开站点引入了跨站请求。
+
+---
+
+## 六、域名 www.mapletech.top 的现状
+
+**服务器侧已经全部就绪，卡在备案上。** 实测结论：
+
+```
+DNS          www.mapletech.top → 122.51.4.253      ✅ 已正确解析
+nginx        server_name 已含域名                    ✅ 带 Host 头本地请求返回 200 且标题正确
+外网访问      → 302 https://dnspod.qcloud.com/static/webblock.html
+                                                    ❌ 腾讯云未备案拦截
+```
+
+跳转到 `webblock.html` 是腾讯云对未备案域名的网络层拦截，与 nginx 配置无关。
+**备案通过后无需再改服务器上的任何东西，域名会自动生效。**
+
+两个待办：
+
+- 裸域 `mapletech.top` 目前没有 A 记录，建议在 DNS 服务商处补一条指向 `122.51.4.253`。
+- 想在备案通过前就用上域名，只能走境外托管：GitHub Pages 绑定自有域名**不需要备案**，
+  在 `site/public/` 下加 `CNAME` 文件（内容写 `www.mapletech.top`），
+  域名 CNAME 解析到 `maple1999.github.io`，证书由 GitHub 自动签发。
+
+---
+
+## 七、备案通过后：把域名切成主站
 
 1. **域名解析**：`mapletech.top` 和 `www.mapletech.top` 的 A 记录指向 `122.51.4.253`。
 
@@ -162,7 +247,7 @@ nginx 配置源码在 `deploy/` 下（未纳入公开仓库），服务器上对
 
 ---
 
-## 六、内容上需要确认的地方
+## 八、内容上需要确认的地方
 
 - **在投论文只写了研究方向，没写标题**（按双盲评审惯例）。你的 CV 里是有完整标题的，
   网站是刻意不同步——如果希望网站也放标题，改 `profile.ts` 的 `underReview` 即可。
@@ -174,7 +259,7 @@ nginx 配置源码在 `deploy/` 下（未纳入公开仓库），服务器上对
 
 ---
 
-## 七、目录结构
+## 九、目录结构
 
 ```
 personal_web/
@@ -193,6 +278,8 @@ personal_web/
 │       ├── deploy.mjs          # 部署到腾讯云镜像（未纳入公开仓库）
 │       ├── shoot.mjs           # 截图回归
 │       └── diagnose.mjs        # 页面运行时诊断
-├── deploy/                     # nginx 配置源码（未纳入公开仓库）
+├── deploy/                     # 服务器配置（未纳入公开仓库）
+│   ├── mapletech*.conf         # nginx 站点配置
+│   └── visit-notify/           # 访问邮件提醒（守护进程 + systemd 单元）
 └── *.pdf / *.jpg               # 原始简历与照片素材（未纳入公开仓库）
 ```
