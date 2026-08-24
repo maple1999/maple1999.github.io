@@ -1,0 +1,251 @@
+---
+import '../styles/global.css';
+import Icon from '../components/Icon.astro';
+import { site, identity, links, ui } from '../data/profile';
+import { t, other, type Lang } from '../lib/i18n';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+
+const alt = other(lang);
+const altHref = alt === 'en' ? '/' : '/zh/';
+const selfHref = lang === 'en' ? '/' : '/zh/';
+
+/** 本次构建的站点根地址，由 astro.config.mjs 的 SITE_URL 决定 */
+const base = Astro.site ?? new URL('https://maple1999.github.io');
+const abs = (p: string) => new URL(p, base).href;
+const canonical = abs(selfHref);
+
+/** 镜像站不参与搜索引擎收录，避免与主站重复内容互相稀释 */
+const noindex = process.env.NOINDEX === '1';
+
+const title = t(site.title, lang);
+const description = t(site.description, lang);
+const year = 2026;
+
+/** 结构化数据 — 帮助 Google Scholar / 搜索引擎正确识别学者身份 */
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: 'Shizhao Gao',
+  alternateName: '高世钊',
+  url: base.href,
+  image: abs('/portrait.jpg'),
+  email: `mailto:${links.email}`,
+  jobTitle: 'M.Eng. Researcher in Artificial Intelligence',
+  description: t(site.description, 'en'),
+  affiliation: {
+    '@type': 'ResearchOrganization',
+    name: 'Quanzhou Institute of Equipment Manufacturing, Haixi Institute, Chinese Academy of Sciences',
+  },
+  alumniOf: [
+    { '@type': 'CollegeOrUniversity', name: 'Fujian Agriculture and Forestry University' },
+    { '@type': 'CollegeOrUniversity', name: 'South-Central Minzu University' },
+  ],
+  knowsAbout: [
+    'Computer Vision', 'Video Understanding', 'Self-Supervised Learning',
+    'Repetitive Action Counting', 'Skeleton-Based Action Recognition',
+    'Video-Language Models', 'Efficient Inference',
+  ],
+  sameAs: [links.scholar, links.github, links.orcid],
+};
+---
+<!doctype html>
+<html lang={site.locales[lang]} data-lang={lang} class="no-js">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <meta name="author" content="Shizhao Gao" />
+  <meta name="theme-color" content="#0a0c10" media="(prefers-color-scheme: dark)" />
+  <meta name="theme-color" content="#fbfaf7" media="(prefers-color-scheme: light)" />
+
+  <link rel="canonical" href={canonical} />
+  <link rel="alternate" hreflang="en" href={abs('/')} />
+  <link rel="alternate" hreflang="zh-CN" href={abs('/zh/')} />
+  <link rel="alternate" hreflang="x-default" href={abs('/')} />
+  {noindex && <meta name="robots" content="noindex, nofollow" />}
+
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="/favicon.svg" />
+
+  <!-- 自托管字体，预加载首屏所需 -->
+  <link rel="preload" href="/fonts/InstrumentSerif-Regular.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/fonts/Inter-Variable.woff2" as="font" type="font/woff2" crossorigin />
+
+  <meta property="og:type" content="profile" />
+  <meta property="og:site_name" content="Shizhao Gao" />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:url" content={canonical} />
+  <meta property="og:locale" content={lang === 'en' ? 'en_US' : 'zh_CN'} />
+  <meta property="og:locale:alternate" content={lang === 'en' ? 'zh_CN' : 'en_US'} />
+  <meta property="og:image" content={abs('/portrait.jpg')} />
+  <meta property="og:image:width" content="600" />
+  <meta property="og:image:height" content="600" />
+  <meta property="og:image:alt" content="Shizhao Gao" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content={title} />
+  <meta name="twitter:description" content={description} />
+  <meta name="twitter:image" content={abs('/portrait.jpg')} />
+
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+
+  <!-- 主题在首次绘制前确定，避免闪烁 -->
+  <script is:inline>
+    (function () {
+      var d = document.documentElement;
+      d.classList.remove('no-js');
+      try {
+        d.dataset.theme = localStorage.getItem('theme') || 'dark';
+      } catch (e) {
+        d.dataset.theme = 'dark';
+      }
+    })();
+  </script>
+</head>
+
+<body>
+  <a class="skip-link" href="#main">{lang === 'en' ? 'Skip to content' : '跳到主要内容'}</a>
+
+  <header class="nav" id="nav" data-scrolled="false">
+    <div class="nav-inner">
+      <a class="brand" href={selfHref} aria-label={t(identity.name, lang)}>
+        <svg class="brand-mark" viewBox="0 0 64 64" aria-hidden="true">
+          <path d="M6 32c3-11 6-11 9 0s6 11 10 0 7.5-13 12.5 0 8.5 11 12.5 2"
+                fill="none" stroke="currentColor" stroke-width="4"
+                stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="brand-text">{t(identity.name, lang)}</span>
+      </a>
+
+      <nav class="nav-links" aria-label={lang === 'en' ? 'Sections' : '章节导航'}>
+        {ui.nav.map((item) => (
+          <a class="nav-link" href={`#${item.id}`} data-nav={item.id}>{item[lang]}</a>
+        ))}
+      </nav>
+
+      <div class="nav-tools">
+        <a class="icon-btn lang-btn" href={altHref} id="lang-toggle"
+           title={t(ui.actions.switchLangTitle, lang)} hreflang={site.locales[alt]}>
+          {t(ui.actions.switchLang, lang)}
+        </a>
+        <button class="icon-btn" id="theme-toggle" type="button"
+                title={t(ui.actions.toggleTheme, lang)}
+                aria-label={t(ui.actions.toggleTheme, lang)}>
+          <Icon name="sun" class="icon-sun" />
+          <Icon name="moon" class="icon-moon" />
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <slot />
+  </main>
+
+  <footer class="footer">
+    <div class="wrap footer-inner">
+      <div>
+        <p>{t(ui.footer.built, lang)}</p>
+        <p style="margin-top:.35rem">© {year} {t(identity.name, lang)}. {t(ui.footer.rights, lang)}</p>
+        {site.icp && (
+          <p class="footer-icp" style="margin-top:.35rem">
+            <a class="footer-link" href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">{site.icp}</a>
+          </p>
+        )}
+      </div>
+      <div class="footer-links">
+        <a class="footer-link" href={`mailto:${links.email}`}>{t(ui.actions.email, lang)}</a>
+        <a class="footer-link" href={links.scholar} target="_blank" rel="noopener noreferrer">Google Scholar</a>
+        <a class="footer-link" href={links.github} target="_blank" rel="noopener noreferrer">GitHub</a>
+        <a class="footer-link" href={links.orcid} target="_blank" rel="noopener noreferrer">ORCID</a>
+        <a class="footer-link" href="#top">{t(ui.actions.backToTop, lang)} ↑</a>
+      </div>
+    </div>
+  </footer>
+
+  <style is:global>
+    /* 主题按钮图标切换 */
+    #theme-toggle .icon-moon { display: none; }
+    :root[data-theme='light'] #theme-toggle .icon-sun { display: none; }
+    :root[data-theme='light'] #theme-toggle .icon-moon { display: block; }
+  </style>
+
+  <script>
+    // ---------- 主题切换 ----------
+    const root = document.documentElement;
+    document.getElementById('theme-toggle')?.addEventListener('click', () => {
+      const next = root.dataset.theme === 'light' ? 'dark' : 'light';
+      root.dataset.theme = next;
+      try { localStorage.setItem('theme', next); } catch {}
+    });
+
+    // ---------- 语言切换时保留当前阅读位置 ----------
+    const langToggle = document.getElementById('lang-toggle') as HTMLAnchorElement | null;
+    if (langToggle) {
+      langToggle.addEventListener('click', () => {
+        const active = document.querySelector('.nav-link[aria-current="true"]');
+        const id = active?.getAttribute('data-nav');
+        if (id) langToggle.href = langToggle.getAttribute('href')!.split('#')[0] + '#' + id;
+      });
+    }
+
+    // ---------- 导航栏滚动态 ----------
+    const nav = document.getElementById('nav');
+    const onScroll = () => nav?.setAttribute('data-scrolled', String(window.scrollY > 24));
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    // ---------- 当前章节高亮 ----------
+    const navLinks = [...document.querySelectorAll<HTMLAnchorElement>('.nav-link')];
+    const sections = navLinks
+      .map((l) => document.getElementById(l.dataset.nav!))
+      .filter((el): el is HTMLElement => !!el);
+
+    if (sections.length) {
+      const spy = new IntersectionObserver(
+        (entries) => {
+          for (const e of entries) {
+            if (!e.isIntersecting) continue;
+            navLinks.forEach((l) =>
+              l.setAttribute('aria-current', String(l.dataset.nav === e.target.id)),
+            );
+          }
+        },
+        { rootMargin: '-45% 0px -50% 0px', threshold: 0 },
+      );
+      sections.forEach((s) => spy.observe(s));
+    }
+
+    // ---------- 滚动渐显 ----------
+    // 先声明"脚本已接管"，CSS 才会把 .reveal 藏起来。
+    // 脚本没跑到这里的话，内容保持可见 —— 永远不会出现空白页。
+    const revealables = document.querySelectorAll('.reveal');
+    if (revealables.length && 'IntersectionObserver' in window) {
+      root.classList.add('js-reveal');
+
+      const show = (el: Element) => el.classList.add('is-visible');
+
+      const io = new IntersectionObserver(
+        (entries, obs) => {
+          for (const e of entries) {
+            if (!e.isIntersecting) continue;
+            show(e.target);
+            obs.unobserve(e.target);
+          }
+        },
+        { rootMargin: '0px 0px -8% 0px', threshold: 0.06 },
+      );
+      revealables.forEach((el) => io.observe(el));
+
+      // 兜底：无论如何 4 秒后全部显示，避免任何边缘情况留下空白
+      setTimeout(() => {
+        io.disconnect();
+        revealables.forEach(show);
+      }, 4000);
+    }
+  </script>
+</body>
+</html>

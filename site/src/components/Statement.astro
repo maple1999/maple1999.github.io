@@ -1,0 +1,15 @@
+---
+import { statement } from '../data/profile';
+import { t, type Lang } from '../lib/i18n';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+---
+<section class="section statement">
+  <div class="wrap">
+    <div class="statement-inner reveal">
+      <span class="eyebrow">{t(statement.eyebrow, lang)}</span>
+      <p class="statement-text" set:html={t(statement.text, lang)} />
+    </div>
+  </div>
+</section>

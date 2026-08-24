@@ -1,0 +1,22 @@
+---
+import Base from '../layouts/Base.astro';
+const lang = 'en' as const;
+---
+<Base lang={lang}>
+  <section class="section" style="min-height:70svh;display:grid;place-items:center;text-align:center">
+    <div class="wrap">
+      <span class="eyebrow" style="justify-content:center">404</span>
+      <h1 class="section-title" style="max-width:none;margin:1rem auto 1.25rem">
+        This page doesn’t exist
+      </h1>
+      <p class="lede" style="margin:0 auto 2rem">
+        The link may be outdated, or the page may have moved.
+        <br />这个页面不存在，链接可能已经失效。
+      </p>
+      <div style="display:flex;gap:.7rem;justify-content:center;flex-wrap:wrap">
+        <a class="btn btn-primary" href="/">Back to homepage</a>
+        <a class="btn btn-ghost" href="/zh/">返回中文主页</a>
+      </div>
+    </div>
+  </section>
+</Base>

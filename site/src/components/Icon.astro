@@ -1,0 +1,29 @@
+---
+/**
+ * 内联 SVG 图标集。全部 currentColor + stroke，随主题自动变色。
+ */
+interface Props {
+  name:
+    | 'arrow-right' | 'arrow-up' | 'external' | 'download' | 'mail' | 'github'
+    | 'scholar' | 'orcid' | 'star' | 'presentation' | 'check' | 'sun' | 'moon'
+    | 'spark' | 'wave';
+  class?: string;
+}
+const { name, class: cls } = Astro.props;
+const s = { fill: 'none', stroke: 'currentColor', 'stroke-width': '1.6', 'stroke-linecap': 'round', 'stroke-linejoin': 'round' } as const;
+---
+{name === 'arrow-right' && <svg class={cls} viewBox="0 0 24 24" {...s} aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>}
+{name === 'arrow-up' && <svg class={cls} viewBox="0 0 24 24" {...s} aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg>}
+{name === 'external' && <svg class={cls} viewBox="0 0 24 24" {...s} aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>}
+{name === 'download' && <svg class={cls} viewBox="0 0 24 24" {...s} aria-hidden="true"><path d="M12 3v12M7 11l5 5 5-5M4 20h16"/></svg>}
+{name === 'mail' && <svg class={cls} viewBox="0 0 24 24" {...s} aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3.5 7 8.5 6 8.5-6"/></svg>}
+{name === 'github' && <svg class={cls} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 1.8a10.2 10.2 0 0 0-3.23 19.87c.51.1.7-.22.7-.49v-1.9c-2.84.62-3.44-1.2-3.44-1.2-.47-1.18-1.14-1.5-1.14-1.5-.93-.63.07-.62.07-.62 1.03.07 1.57 1.06 1.57 1.06.91 1.57 2.4 1.12 2.98.85.09-.66.36-1.11.65-1.37-2.27-.26-4.66-1.14-4.66-5.06 0-1.12.4-2.03 1.05-2.75-.1-.26-.46-1.3.1-2.71 0 0 .86-.28 2.81 1.05a9.7 9.7 0 0 1 5.12 0c1.95-1.33 2.8-1.05 2.8-1.05.57 1.41.21 2.45.11 2.71.65.72 1.05 1.63 1.05 2.75 0 3.93-2.4 4.8-4.68 5.05.37.32.7.94.7 1.9v2.82c0 .27.18.6.7.49A10.2 10.2 0 0 0 12 1.8Z"/></svg>}
+{name === 'scholar' && <svg class={cls} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2 1 8.5l11 6.5 9-5.32V17h2V8.5L12 2Z"/><path d="M5.5 12.9v3.6c0 2.2 2.9 4 6.5 4s6.5-1.8 6.5-4v-3.6L12 16.75 5.5 12.9Z"/></svg>}
+{name === 'orcid' && <svg class={cls} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 1.8A10.2 10.2 0 1 0 22.2 12 10.21 10.21 0 0 0 12 1.8ZM8.2 17.1H6.7V8.9h1.5v8.2ZM7.45 7.9a.95.95 0 1 1 .95-.95.95.95 0 0 1-.95.95Zm4.02 9.2H9.98V8.9h3.16c3.03 0 4.36 2.16 4.36 4.1a4.09 4.09 0 0 1-4.32 4.1h-1.71Zm.02-1.36h1.5a2.72 2.72 0 0 0 2.88-2.74 2.66 2.66 0 0 0-2.9-2.74h-1.48v5.48Z"/></svg>}
+{name === 'star' && <svg class={cls} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 2.6 2.9 5.88 6.49.95-4.7 4.58 1.11 6.46L12 17.42l-5.8 3.05 1.1-6.46-4.69-4.58 6.49-.95L12 2.6Z"/></svg>}
+{name === 'presentation' && <svg class={cls} viewBox="0 0 24 24" {...s} aria-hidden="true"><path d="M3 4h18M4 4v9a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V4M12 14v6M9 20h6"/></svg>}
+{name === 'check' && <svg class={cls} viewBox="0 0 24 24" {...s} aria-hidden="true"><path d="m4 12.5 5 5L20 6.5"/></svg>}
+{name === 'sun' && <svg class={cls} viewBox="0 0 24 24" {...s} aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.2v2M12 19.8v2M4.4 4.4l1.5 1.5M18.1 18.1l1.5 1.5M2.2 12h2M19.8 12h2M4.4 19.6l1.5-1.5M18.1 5.9l1.5-1.5"/></svg>}
+{name === 'moon' && <svg class={cls} viewBox="0 0 24 24" {...s} aria-hidden="true"><path d="M20.5 14.3A8.5 8.5 0 0 1 9.7 3.5a8.5 8.5 0 1 0 10.8 10.8Z"/></svg>}
+{name === 'spark' && <svg class={cls} viewBox="0 0 24 24" {...s} aria-hidden="true"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6 8.4 8.4M15.6 15.6l2.8 2.8M5.6 18.4l2.8-2.8M15.6 8.4l2.8-2.8"/></svg>}
+{name === 'wave' && <svg class={cls} viewBox="0 0 24 24" {...s} aria-hidden="true"><path d="M2 12c2.5-6 4.5-6 7 0s4.5 6 7 0 4.5-6 6-3"/></svg>}

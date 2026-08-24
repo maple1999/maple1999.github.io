@@ -1,0 +1,188 @@
+---
+import Icon from './Icon.astro';
+import { identity, links, metrics, ui } from '../data/profile';
+import { t, type Lang } from '../lib/i18n';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+---
+<section class="hero" id="top">
+  <canvas class="hero-canvas" id="hero-canvas" aria-hidden="true"></canvas>
+  <div class="hero-glow a" aria-hidden="true"></div>
+  <div class="hero-glow b" aria-hidden="true"></div>
+
+  <div class="wrap hero-inner">
+    <p class="hero-status hero-in">
+      <span class="status-dot" aria-hidden="true"></span>
+      {t(identity.location, lang)}
+    </p>
+
+    <h1 class="display-name hero-name hero-in" style="--d:60ms">
+      {t(identity.name, lang)}
+    </h1>
+
+    <p class="hero-tagline hero-in" style="--d:130ms" set:html={t(identity.tagline, lang)} />
+
+    <ul class="chips hero-in" style="--d:200ms">
+      {identity.chips.map((c) => <li class="chip">{t(c, lang)}</li>)}
+    </ul>
+
+    <div class="hero-actions hero-in" style="--d:260ms">
+      <a class="btn btn-primary" href={links.cv[lang]} download>
+        <Icon name="download" />{t(ui.actions.downloadCv, lang)}
+      </a>
+      <a class="btn btn-ghost" href={`mailto:${links.email}`}>
+        <Icon name="mail" />{t(ui.actions.email, lang)}
+      </a>
+      <a class="icon-btn" href={links.scholar} target="_blank" rel="noopener noreferrer"
+         title="Google Scholar" aria-label="Google Scholar"><Icon name="scholar" /></a>
+      <a class="icon-btn" href={links.github} target="_blank" rel="noopener noreferrer"
+         title="GitHub" aria-label="GitHub"><Icon name="github" /></a>
+      <a class="icon-btn" href={links.orcid} target="_blank" rel="noopener noreferrer"
+         title="ORCID" aria-label="ORCID"><Icon name="orcid" /></a>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <dl class="metrics hero-in" style="--d:340ms">
+      {metrics.map((m) => (
+        <div class="metric">
+          <dd class="metric-value">{m.value}</dd>
+          <dt class="metric-label">{t(m.label, lang)}</dt>
+          <dd class="metric-note">{t(m.note, lang)}</dd>
+        </div>
+      ))}
+    </dl>
+  </div>
+</section>
+
+<script>
+  /* ------------------------------------------------------------------------
+     Hero 背景：周期自适应波形
+     波长沿 x 轴逐渐变化（呼应 period-adaptive 的研究主题），
+     波峰处打点 = 计数。尊重 reduced-motion，不可见时暂停。
+     ---------------------------------------------------------------------- */
+  const canvas = document.getElementById('hero-canvas') as HTMLCanvasElement | null;
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (canvas && !reduced) {
+    const ctx = canvas.getContext('2d', { alpha: true })!;
+    const root = document.documentElement;
+
+    let w = 0, h = 0, dpr = 1;
+    let raf = 0;
+    let running = false;
+    let start = performance.now();
+
+    const WAVES = [
+      { yBase: 0.30, amp: 0.030, p0: 0.070, grow: 1.45, speed: 0.115, width: 1.3, alpha: 0.60, tone: 0 },
+      { yBase: 0.46, amp: 0.044, p0: 0.100, grow: 1.05, speed: -0.082, width: 1.1, alpha: 0.42, tone: 1 },
+      { yBase: 0.62, amp: 0.026, p0: 0.055, grow: 1.85, speed: 0.148, width: 0.9, alpha: 0.26, tone: 0 },
+    ];
+
+    let colors = ['#f0b429', '#4fd1c5'];
+    const readColors = () => {
+      const cs = getComputedStyle(root);
+      colors = [
+        cs.getPropertyValue('--gold').trim() || '#f0b429',
+        cs.getPropertyValue('--teal').trim() || '#4fd1c5',
+      ];
+    };
+    readColors();
+    new MutationObserver(readColors).observe(root, { attributes: true, attributeFilter: ['data-theme'] });
+
+    const resize = () => {
+      const rect = canvas.getBoundingClientRect();
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      w = Math.max(1, rect.width);
+      h = Math.max(1, rect.height);
+      canvas.width = Math.round(w * dpr);
+      canvas.height = Math.round(h * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    };
+
+    const draw = (now: number) => {
+      const time = (now - start) / 1000;
+      ctx.clearRect(0, 0, w, h);
+      const step = 3;
+
+      for (const wave of WAVES) {
+        const color = colors[wave.tone];
+        const baseY = h * wave.yBase;
+        const amp = h * wave.amp;
+        // 相位沿 x 累积，波长逐点变化 → 周期自适应
+        let phase = time * wave.speed * Math.PI * 2;
+        let prevY = baseY;
+        let rising = false;
+        const peaks: number[] = [];
+
+        ctx.beginPath();
+        ctx.moveTo(0, baseY);
+
+        for (let x = 0; x <= w; x += step) {
+          const u = x / w;
+          const lambda = w * wave.p0 * (0.5 + wave.grow * u);
+          phase += (step / lambda) * Math.PI * 2;
+          const y = baseY + Math.sin(phase) * amp;
+          ctx.lineTo(x, y);
+
+          // 屏幕坐标下的局部极小值 = 视觉波峰
+          if (y > prevY && rising) peaks.push(x - step);
+          rising = y < prevY;
+          prevY = y;
+        }
+
+        ctx.strokeStyle = color;
+        ctx.globalAlpha = wave.alpha;
+        ctx.lineWidth = wave.width;
+        ctx.lineJoin = 'round';
+        ctx.lineCap = 'round';
+        ctx.stroke();
+
+        // 计数标记
+        ctx.globalAlpha = wave.alpha * 0.85;
+        ctx.fillStyle = color;
+        for (const px of peaks) {
+          ctx.beginPath();
+          ctx.arc(px, baseY - amp, wave.width * 1.5, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+
+      // 左侧擦除：正文压在干净背景上，波形只在右侧显影
+      ctx.globalAlpha = 1;
+      ctx.globalCompositeOperation = 'destination-out';
+      const eraser = ctx.createLinearGradient(0, 0, w, 0);
+      eraser.addColorStop(0, 'rgba(0,0,0,1)');
+      eraser.addColorStop(0.42, 'rgba(0,0,0,0.92)');
+      eraser.addColorStop(0.72, 'rgba(0,0,0,0.28)');
+      eraser.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = eraser;
+      ctx.fillRect(0, 0, w, h);
+      ctx.globalCompositeOperation = 'source-over';
+
+      raf = requestAnimationFrame(draw);
+    };
+
+    const play = () => {
+      if (running) return;
+      running = true;
+      start = performance.now() - 0;
+      raf = requestAnimationFrame(draw);
+    };
+    const pause = () => {
+      running = false;
+      cancelAnimationFrame(raf);
+    };
+
+    resize();
+    window.addEventListener('resize', () => { resize(); }, { passive: true });
+    document.addEventListener('visibilitychange', () => (document.hidden ? pause() : play()));
+
+    // 滚出视口就停，省电
+    new IntersectionObserver(
+      ([e]) => (e.isIntersecting ? play() : pause()),
+      { threshold: 0 },
+    ).observe(canvas);
+  }
+</script>

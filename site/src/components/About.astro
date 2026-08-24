@@ -1,0 +1,103 @@
+---
+import { Image } from 'astro:assets';
+import Icon from './Icon.astro';
+import portrait from '../assets/portrait.jpg';
+import { identity, education, honors, service, skills, certifications, ui } from '../data/profile';
+import { t, type Lang } from '../lib/i18n';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const s = ui.sections.about;
+const portraitAlt = lang === 'en' ? 'Portrait of Shizhao Gao' : '高世钊本人照片';
+---
+<section class="section" id="about">
+  <div class="wrap">
+    <header class="section-head reveal">
+      <span class="eyebrow">{t(s.eyebrow, lang)}</span>
+      <h2 class="section-title">{t(s.title, lang)}</h2>
+    </header>
+
+    <div class="about-lead reveal">
+      <figure class="portrait">
+        <Image
+          src={portrait}
+          alt={portraitAlt}
+          width={480}
+          densities={[1, 2]}
+          format="webp"
+          quality={82}
+          loading="lazy"
+        />
+      </figure>
+      <p class="lede" set:html={t(identity.intro, lang)} />
+    </div>
+
+    <div class="about-grid">
+      <!-- ------------------------------------------------------- 左栏 -->
+      <div>
+        <section class="about-block reveal">
+          <h3 class="block-label">{t(s.educationLabel, lang)}</h3>
+          {education.map((e) => (
+            <article class="edu">
+              <header class="edu-head">
+                <h4 class="edu-school">{t(e.school, lang)}</h4>
+                <span class="edu-period mono">{t(e.period, lang)}</span>
+              </header>
+              <p class="edu-degree">{t(e.degree, lang)}</p>
+              <p class="edu-dept">{t(e.dept, lang)} · {t(e.location, lang)}</p>
+              {e.joint && <p class="edu-joint">{t(e.joint, lang)}</p>}
+              <p class="edu-detail" set:html={t(e.detail, lang)} />
+            </article>
+          ))}
+        </section>
+
+        <section class="about-block reveal">
+          <h3 class="block-label">{t(s.serviceLabel, lang)}</h3>
+          {service.map((it) => (
+            <article class="service-item">
+              <h4 class="service-title">{t(it.title, lang)}</h4>
+              <p class="service-text" set:html={t(it.text, lang)} />
+            </article>
+          ))}
+        </section>
+      </div>
+
+      <!-- ------------------------------------------------------- 右栏 -->
+      <div>
+        <section class="about-block reveal">
+          <h3 class="block-label">{t(s.honorsLabel, lang)}</h3>
+          {honors.map((h) => (
+            <div class={`honor ${h.highlight ? 'is-highlight' : ''}`}>
+              <span class="honor-year mono">{h.year}</span>
+              <span>{t(h.text, lang)}</span>
+            </div>
+          ))}
+        </section>
+
+        <section class="about-block reveal">
+          <h3 class="block-label">{t(s.skillsLabel, lang)}</h3>
+          {skills.map((g) => (
+            <div class="skill-group">
+              <h4 class="skill-group-name">{t(g.group, lang)}</h4>
+              <ul class="tag-row" style="margin-top:0;padding-top:0">
+                {g.items.map((it) => <li class="tag">{it}</li>)}
+              </ul>
+            </div>
+          ))}
+        </section>
+
+        <section class="about-block reveal">
+          <h3 class="block-label">{t(s.certLabel, lang)}</h3>
+          <ul class="cert-list">
+            {certifications.map((c) => (
+              <li class="cert-item">
+                <Icon name="check" />
+                <span>{t(c, lang)}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      </div>
+    </div>
+  </div>
+</section>

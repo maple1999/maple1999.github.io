@@ -1,0 +1,19 @@
+{
+  "name": "mapletech-personal-site",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "deploy": "node scripts/deploy.mjs"
+  },
+  "dependencies": {
+    "astro": "^5.13.0",
+    "sharp": "^0.34.2"
+  },
+  "devDependencies": {
+    "puppeteer-core": "^25.8.0"
+  }
+}

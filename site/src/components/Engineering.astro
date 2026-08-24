@@ -1,0 +1,51 @@
+---
+import Icon from './Icon.astro';
+import { engineering, ui } from '../data/profile';
+import { t, type Lang } from '../lib/i18n';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const s = ui.sections.engineering;
+---
+<section class="section" id="engineering">
+  <div class="wrap">
+    <header class="section-head reveal">
+      <span class="eyebrow">{t(s.eyebrow, lang)}</span>
+      <h2 class="section-title">{t(s.title, lang)}</h2>
+    </header>
+
+    <p class="eng-intro reveal">{t(engineering.intro, lang)}</p>
+
+    <div class="timeline">
+      {engineering.roles.map((role, i) => (
+        <article class="role reveal" style={`--reveal-delay:${i * 90}ms`}>
+          <header class="role-head">
+            <h3 class="role-org">{t(role.org, lang)}</h3>
+            <span class="role-title">{t(role.title, lang)}</span>
+            <span class="role-period mono">{t(role.period, lang)}</span>
+          </header>
+
+          <ul class="role-points">
+            {role.points.map((pt) => <li class="role-point" set:html={t(pt, lang)} />)}
+          </ul>
+
+          <ul class="tag-row">
+            {(lang === 'en' ? role.tags : role.tagsZh).map((tag) => <li class="tag">{tag}</li>)}
+          </ul>
+        </article>
+      ))}
+    </div>
+
+    <aside class="infra reveal">
+      <h3 class="infra-title">{t(engineering.infra.title, lang)}</h3>
+      <ul class="infra-grid">
+        {engineering.infra.points.map((pt) => (
+          <li class="infra-item">
+            <Icon name="check" />
+            <span set:html={t(pt, lang)} />
+          </li>
+        ))}
+      </ul>
+    </aside>
+  </div>
+</section>

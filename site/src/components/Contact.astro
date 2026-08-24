@@ -1,0 +1,45 @@
+---
+import Icon from './Icon.astro';
+import { identity, links, ui } from '../data/profile';
+import { t, type Lang } from '../lib/i18n';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const s = ui.sections.contact;
+---
+<section class="section contact" id="contact">
+  <div class="contact-glow" aria-hidden="true"></div>
+
+  <div class="wrap contact-inner">
+    <header class="section-head reveal" style="align-items:center;text-align:center;margin-bottom:0">
+      <span class="eyebrow">{t(s.eyebrow, lang)}</span>
+      <h2 class="section-title" style="max-width:none">{t(s.title, lang)}</h2>
+    </header>
+
+    <a class="contact-mail reveal" href={`mailto:${links.email}`}>{links.email}</a>
+
+    <p class="lede contact-body reveal" style="max-width:52ch;margin-bottom:2.25rem">
+      {t(s.body, lang)}
+    </p>
+
+    <div class="contact-socials reveal">
+      <a class="btn btn-ghost" href={links.scholar} target="_blank" rel="noopener noreferrer">
+        <Icon name="scholar" />{t(ui.actions.scholar, lang)}
+      </a>
+      <a class="btn btn-ghost" href={links.github} target="_blank" rel="noopener noreferrer">
+        <Icon name="github" />{t(ui.actions.github, lang)}
+      </a>
+      <a class="btn btn-ghost" href={links.orcid} target="_blank" rel="noopener noreferrer">
+        <Icon name="orcid" />{t(ui.actions.orcid, lang)}
+      </a>
+      <a class="btn btn-primary" href={links.cv[lang]} download>
+        <Icon name="download" />{t(ui.actions.downloadCv, lang)}
+      </a>
+    </div>
+
+    <p class="availability reveal">
+      <span class="status-dot" aria-hidden="true"></span>
+      {t(identity.availability, lang)}
+    </p>
+  </div>
+</section>

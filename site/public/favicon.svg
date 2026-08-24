@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Shizhao Gao">
+  <rect width="64" height="64" rx="14" fill="#0a0c10"/>
+  <!-- period-adaptive wave: periods widen left→right -->
+  <path d="M8 32c3-11 6-11 9 0s6 11 10 0 7.5-13 12.5 0 8.5 11 12.5 2"
+        fill="none" stroke="#f0b429" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- counting ticks -->
+  <circle cx="17" cy="32" r="2.6" fill="#4fd1c5"/>
+  <circle cx="32" cy="32" r="2.6" fill="#4fd1c5"/>
+  <circle cx="52" cy="32" r="2.6" fill="#4fd1c5"/>
+</svg>

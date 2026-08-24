@@ -1,0 +1,85 @@
+---
+import Icon from './Icon.astro';
+import { publications, underReview, links, ui } from '../data/profile';
+import { t, type Lang } from '../lib/i18n';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const s = ui.sections.publications;
+---
+<section class="section" id="publications">
+  <div class="wrap">
+    <header class="section-head reveal">
+      <span class="eyebrow">{t(s.eyebrow, lang)}</span>
+      <h2 class="section-title">{t(s.title, lang)}</h2>
+    </header>
+
+    <!-- ---------------------------------------------------------- 已发表 -->
+    <h3 class="pub-group-label reveal">{t(s.publishedLabel, lang)}</h3>
+
+    {publications.map((p) => (
+      <article class="card pub-featured reveal">
+        <div class="pub-meta">
+          <span class="venue-badge">{p.venue}</span>
+          <span class="pub-role">{t(p.role, lang)}</span>
+        </div>
+
+        <h4 class="pub-title">{p.title}</h4>
+
+        <p class="pub-authors">
+          {p.authors.map((a, i) => (
+            <>
+              <span class={a.me ? 'me' : ''}>{a.name}</span>{a.corresponding ? '*' : ''}{i < p.authors.length - 1 ? ', ' : ''}
+            </>
+          ))}
+          <span style="color:var(--text-dim)"> — {t(p.venueFull, lang)}, {p.year}</span>
+        </p>
+
+        <p class="pub-summary">{t(p.summary, lang)}</p>
+
+        <ul class="award-list">
+          {p.awards.map((a, i) => (
+            <li class={`award ${i === 0 ? 'is-award' : ''}`}>
+              <Icon name={i === 0 ? 'star' : 'presentation'} />
+              <span>{t(a, lang)}</span>
+            </li>
+          ))}
+        </ul>
+
+        <div class="pub-links">
+          {p.resources.map((r) => (
+            <a class="link-arrow" href={r.href} target="_blank" rel="noopener noreferrer">
+              {t(r.label, lang)}<Icon name="external" />
+            </a>
+          ))}
+          <a class="link-arrow" href={links.scholar} target="_blank" rel="noopener noreferrer">
+            {t(s.scholarCta, lang)}<Icon name="external" />
+          </a>
+        </div>
+      </article>
+    ))}
+
+    <!-- ---------------------------------------------------------- 在投中 -->
+    <h3 class="pub-group-label reveal" style="margin-top:3rem">
+      {t(s.underReviewLabel, lang)}
+    </h3>
+
+    <div class="review-list reveal">
+      {underReview.map((r) => (
+        <div class="review-row">
+          <div class="review-venue">
+            <span class="review-venue-name">{r.venue}</span>
+            <span class="review-tier mono">{t(r.tier, lang)}</span>
+          </div>
+          <div>
+            <p class="review-topic">{t(r.topic, lang)}</p>
+            <p class="review-role mono">{t(r.role, lang)}</p>
+          </div>
+          <span class="review-status">{t(r.status, lang)}</span>
+        </div>
+      ))}
+    </div>
+
+    <p class="review-note reveal">{t(s.underReviewNote, lang)}</p>
+  </div>
+</section>

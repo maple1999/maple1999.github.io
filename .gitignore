@@ -1,0 +1,26 @@
+# 依赖与构建产物
+node_modules/
+dist/
+.astro/
+*.tsbuildinfo
+
+# 截图回归产物
+.shots/
+
+# 原始素材（成绩单含成绩与个人信息，不进公开仓库）
+# 对外公开的两份简历在 site/public/cv/、人像在 site/src/assets/，随站点发布
+/*.pdf
+/*.jpg
+/*.png
+
+# 服务器部署配置（含主机地址与路径，不必公开）
+deploy/
+site/scripts/deploy.mjs
+
+# 环境与编辑器
+.env
+.env.*
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

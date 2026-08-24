@@ -1,0 +1,65 @@
+---
+import Icon from './Icon.astro';
+import { projects, ui } from '../data/profile';
+import { t, type Lang } from '../lib/i18n';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const s = ui.sections.projects;
+---
+<section class="section" id="projects">
+  <div class="wrap">
+    <header class="section-head reveal">
+      <span class="eyebrow">{t(s.eyebrow, lang)}</span>
+      <h2 class="section-title">{t(s.title, lang)}</h2>
+    </header>
+
+    <div class="project-list">
+      {projects.map((p, i) => (
+        <article class="project reveal" data-accent={p.accent} style={`--reveal-delay:${i * 80}ms`}>
+          <div class="project-aside">
+            <span class="project-kind">{t(p.kind, lang)}</span>
+            <h3 class="project-title">{t(p.title, lang)}</h3>
+            <span class="project-period">{t(p.period, lang)}</span>
+
+            {p.results.length > 0 && (
+              <ul class="result-list">
+                {p.results.map((r) => (
+                  <li class="result">
+                    <span class="result-k">{t(r.k, lang)}</span>
+                    <span class="result-v">{t(r.v, lang)}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+
+          <div class="project-body">
+            <div>
+              <span class="field-label">{t(s.problemLabel, lang)}</span>
+              <p class="field-body" set:html={t(p.problem, lang)} />
+            </div>
+            <div>
+              <span class="field-label">{t(s.approachLabel, lang)}</span>
+              <p class="field-body" set:html={t(p.approach, lang)} />
+            </div>
+            <div>
+              <span class="field-label">{t(s.outcomeLabel, lang)}</span>
+              <p class="field-body" set:html={t(p.outcome, lang)} />
+            </div>
+
+            {p.resources.length > 0 && (
+              <div class="pub-links">
+                {p.resources.map((r) => (
+                  <a class="link-arrow" href={r.href} target="_blank" rel="noopener noreferrer">
+                    {t(r.label, lang)}<Icon name="external" />
+                  </a>
+                ))}
+              </div>
+            )}
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
