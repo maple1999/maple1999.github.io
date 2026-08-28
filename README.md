@@ -167,14 +167,19 @@ systemd: visit-notify.service     日志: journalctl -u visit-notify -f
 | 字节数 | 响应体 < 1000 字节的丢弃——扫描器常见「连上就断」，真实页面 gzip 后约 12KB |
 | UA | 正则过滤爬虫／扫描器／命令行工具；要求带 `Mozilla` 前缀 |
 | **子资源确认** | **页面命中后进入 25 秒待确认队列；只有同一 IP 接着请求了 CSS／字体／头像才判定为真人。机器人取完 HTML 就走，这是最有效的一层** |
+| **机房 IP** | **`ip-api` 的 `hosting` 字段为真则丢弃。高级爬虫会用无头浏览器加载 CSS 字体、骗过上一层，但骗不过 IP 归属——没有真人从 DigitalOcean 的实例上浏览网页。高校和企业网络永远不会被标为 hosting，不会误伤目标读者** |
 | 去重 + 配额 | 同一 IP 在 `dedupe_hours`（默认 6h）内只提醒一次；每日 `daily_limit`（默认 40）封上限，保护 163 账号 |
 
 实测效果：
 
 ```
-只请求 /（伪造 Chrome UA）        → 丢弃（只取了 HTML，判定为机器人）
-请求 / + CSS + 字体（同一 IP）     → 发出提醒
+只请求 /（伪造 Chrome UA）             → 丢弃（只取了 HTML，判定为机器人）
+请求 / + CSS + 字体（同一 IP）          → 发出提醒
+AWS / DigitalOcean / 腾讯云 等机房 IP   → 丢弃（hosting=true）
+清华 CERNET 166.111.4.100            → 放行 ✅（教育网不会被标为 hosting）
 ```
+
+`skip_hosting` 在 `config.json` 里可关（默认开）。
 
 > ⚠️ **`/_astro/` 和 `/fonts/` 的 `access_log` 必须保持开启。**
 > 这两个 location 原本为了让日志干净设了 `access_log off`，结果子资源确认永远拿不到信号。
@@ -212,7 +217,53 @@ GitHub Pages 是纯静态托管，没有服务端、也拿不到访问日志。
 
 ---
 
-## 六、域名 www.mapletech.top 的现状
+## 六、扫描流量与防护（为什么没上 Cloudflare）
+
+公网 IP 上线即被全网扫描器发现，这是常态而非攻击。14.5 小时的实测：
+
+| | |
+|---|---|
+| 总请求 | 2077，独立 IP 191 |
+| **404（探测不存在的路径）** | **1783，占 86%** |
+| 两个 Google Cloud IP | 1378 次，占 66% |
+| 真实浏览器会话 | 约 18 次 |
+
+### Cloudflare 在这里没用
+
+**这些流量全部直接打 IP `122.51.4.253`，不经过域名。** Cloudflare 的防护建立在
+DNS 代理之上——流量必须经由域名解析到 Cloudflare 才会被过滤。任何人知道源站 IP
+就能完全绕过它。所以接入 Cloudflare 对当前这批流量的拦截率是 **0%**。
+
+即便备案后把域名挂上 Cloudflare，源站 IP 仍然直接暴露，还需要把服务器防火墙
+配成只接受 Cloudflare 回源 IP 段，才谈得上有效。
+
+另外，人机验证（Turnstile / Managed Challenge）**必然会打断首次访问的真人**——
+这正是它的工作方式。对一个面向潜在博导的学术主页来说，让对方先做一次验证码
+是在赶客，得不偿失。
+
+### 实际采取的措施（对真人完全无感）
+
+```nginx
+# conf.d/mapletech-limits.conf —— 限流区（http 上下文）
+limit_req_zone  $binary_remote_addr zone=mapletech_req:10m rate=60r/m;
+limit_conn_zone $binary_remote_addr zone=mapletech_conn:10m;
+
+# snippets/mapletech-common.conf —— 探测路径直接断连
+location ~* "\.(php|phtml|asp|aspx|jsp|cgi|bak|sql|env|ini|conf)$"  { access_log off; return 444; }
+location ~* "^/(wp-|\.git|\.env|@vite|_profiler|actuator|cgi-bin/|…)" { access_log off; return 444; }
+```
+
+- `return 444` 直接断开连接、不返回任何字节，省带宽也降低扫描器对本机的兴趣
+- 限流 60r/m：真人一次页面加载约 6 个请求，差两个数量级；扫描器会被削掉
+- 这两类探测路径**不记日志**，access.log 体积下降约 86%，也不影响 visit-notify
+  （它们不是子资源）
+
+实测：`/`、`/zh/`、`/_astro/*`、`/fonts/*`、`/cv/*`、`/playground/` 全部 200；
+`/wp-login.php`、`/.env`、`/@vite/env`、`/_profiler/phpinfo` 全部断连。
+
+---
+
+## 七、域名 www.mapletech.top 的现状
 
 **服务器侧已经全部就绪，卡在备案上。** 实测结论：
 
@@ -235,7 +286,7 @@ nginx        server_name 已含域名                    ✅ 带 Host 头本地�
 
 ---
 
-## 七、备案通过后：把域名切成主站
+## 八、备案通过后：把域名切成主站
 
 1. **域名解析**：`mapletech.top` 和 `www.mapletech.top` 的 A 记录指向 `122.51.4.253`。
 
@@ -259,19 +310,25 @@ nginx        server_name 已含域名                    ✅ 带 Host 头本地�
 
 ---
 
-## 八、内容上需要确认的地方
+## 九、内容上需要确认的地方
 
 - **在投论文只写了研究方向，没写标题**（按双盲评审惯例）。你的 CV 里是有完整标题的，
   网站是刻意不同步——如果希望网站也放标题，改 `profile.ts` 的 `underReview` 即可。
 - **出生日期、手机号没有放到公开页面**（CV 里有），避免被爬虫抓取用于身份信息拼接。
 - **成绩单没有公开**，也没有进入 Git 仓库（`.gitignore` 已排除根目录所有 PDF）。
-- **推荐人信息没有放到网站上**——公开导师邮箱需要先征得他们同意。
+- **⚠️ 两封推荐信已公开上站**（引文 + 完整 PDF 下载）。**发布前请务必征得李俊、李琦铭
+  两位老师同意**——信件是他们署名的文字，且 PDF 里含两人的机构邮箱
+  （`junli@fjirsm.ac.cn`、`qimingli@fjirsm.ac.cn`），公开后会被爬虫抓取。
+  只想保留引文、不公开完整信件的话，删掉 `profile.ts` 里 `recommendations` 的
+  `letter` 字段和 `site/public/letters/` 目录即可。
+- 另需留意：部分博士项目要求推荐信由推荐人直接提交、申请人不得查阅，
+  公开信件在某些招生流程里可能不合适，建议先确认目标项目的规定。
 - 首屏 slogan、`identity.intro` 自述、各项目的「问题 / 方法 / 结果」叙述，
   是根据你的 CV 与附录改写的，**建议逐句过一遍**，确保语气和事实都符合你本人的表达。
 
 ---
 
-## 九、目录结构
+## 十、目录结构
 
 ```
 personal_web/
@@ -285,7 +342,7 @@ personal_web/
 │   │   ├── assets/portrait.jpg # 人像原图（构建期自动优化）
 │   │   ├── styles/global.css   # 设计系统（配色、排版、组件样式）
 │   │   └── lib/i18n.ts         # 取词助手
-│   ├── public/                 # 字体、简历 PDF、favicon、分享图
+│   ├── public/                 # 字体、简历 PDF、推荐信、favicon、分享图
 │   └── scripts/
 │       ├── deploy.mjs          # 部署到腾讯云镜像（未纳入公开仓库）
 │       ├── shoot.mjs           # 截图回归
