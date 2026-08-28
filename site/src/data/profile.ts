@@ -410,6 +410,62 @@ export const engineering = {
   },
 };
 
+/* ------------------------------------------------------------ 导师推荐信
+ *  只摘录最能说明问题的句子，完整信件挂 PDF。
+ *  公开前请确认两位导师都同意——信里含他们的机构邮箱。
+ * ------------------------------------------------------------------------ */
+
+export const recommendations = [
+  {
+    name: { en: 'Prof. Jun Li', zh: '李俊 研究员' } satisfies L,
+    title: { en: 'Professor', zh: '研究员 · 博士生导师' } satisfies L,
+    affiliation: {
+      en: 'Quanzhou Institute of Equipment Manufacturing, Haixi Institute, CAS',
+      zh: '中国科学院海西研究院泉州装备制造研究所',
+    } satisfies L,
+    relation: {
+      en: 'Primary research supervisor since Sep 2024',
+      zh: '2024 年 9 月起任主要科研导师',
+    } satisfies L,
+    accent: 'gold',
+    quotes: [
+      {
+        en: 'He independently identified the bottleneck in variable-speed action sequences, conceived the mitigation strategy, and drove the implementation to completion — demonstrating the intellectual autonomy essential for doctoral research.',
+        zh: '他独立定位了变速动作序列中的瓶颈，构思出缓解策略并推动实现落地——展现出博士研究所必需的学术独立性。',
+      } satisfies L,
+      {
+        en: 'Among the master’s researchers I have worked with in recent years, he stands out for his combination of initiative, follow-through, and consideration for colleagues.',
+        zh: '在我近年合作过的硕士研究者中，他在主动性、执行力与对同事的体谅这三者的结合上尤为突出。',
+      } satisfies L,
+    ],
+    letter: '/letters/Recommendation_Jun_Li.pdf',
+  },
+  {
+    name: { en: 'Assoc. Prof. Qiming Li', zh: '李琦铭 副研究员' } satisfies L,
+    title: { en: 'Associate Professor', zh: '副研究员' } satisfies L,
+    affiliation: {
+      en: 'Quanzhou Institute of Equipment Manufacturing, Haixi Institute, CAS',
+      zh: '中国科学院海西研究院泉州装备制造研究所',
+    } satisfies L,
+    relation: {
+      en: 'Day-to-day supervisor; corresponding author on all current papers',
+      zh: '日常科研导师；现有全部论文的通讯作者',
+    } satisfies L,
+    accent: 'teal',
+    quotes: [
+      {
+        en: 'Across these projects, he has demonstrated the full cycle of problem definition, implementation, deployment, evaluation, and revision.',
+        zh: '在这些项目中，他完整展现了问题定义、实现、部署、评估到修正的全流程能力。',
+      } satisfies L,
+      {
+        en: 'He is willing to resolve infrastructure issues that affect the wider group, even when they are not part of his own immediate experiments.',
+        zh: '即使与自己的实验无关，他也愿意去解决那些影响整个团队的基础设施问题。',
+      } satisfies L,
+    ],
+    letter: '/letters/Recommendation_Qiming_Li.pdf',
+  },
+];
+
 /* ---------------------------------------------------------------- 技能栈 */
 
 export const skills = [
@@ -503,6 +559,7 @@ export const ui = {
     { id: 'publications', en: 'Publications', zh: '论文' },
     { id: 'projects', en: 'Projects', zh: '项目' },
     { id: 'engineering', en: 'Engineering', zh: '工程' },
+    { id: 'references', en: 'References', zh: '推荐' },
     { id: 'about', en: 'About', zh: '关于' },
   ],
   sections: {
@@ -531,6 +588,11 @@ export const ui = {
     engineering: {
       eyebrow: { en: 'Engineering', zh: '工程' } satisfies L,
       title: { en: 'Not only a researcher', zh: '不只是一个研究者' } satisfies L,
+    },
+    references: {
+      eyebrow: { en: 'References', zh: '推荐' } satisfies L,
+      title: { en: 'What my supervisors say', zh: '导师的评价' } satisfies L,
+      readLetter: { en: 'Read the full letter', zh: '阅读完整推荐信' } satisfies L,
     },
     about: {
       eyebrow: { en: 'About', zh: '关于' } satisfies L,
