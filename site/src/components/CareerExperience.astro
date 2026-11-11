@@ -1,0 +1,34 @@
+---
+import type { CareerRole } from '../data/career-roles';
+interface Props { role: CareerRole }
+const { role } = Astro.props;
+const id = `${role.id}-experience`;
+---
+<section class="section" id={id} aria-labelledby={`${id}-heading`}>
+  <div class="wrap">
+    <header class="section-head">
+      <span class="eyebrow">工作经历</span>
+      <h2 class="section-title" id={`${id}-heading`}>{role.experienceHeading}</h2>
+      <p class="lede">{role.experienceIntro}</p>
+    </header>
+
+    <div class="timeline">
+      {role.experience.map((job) => (
+        <article class="role career-job">
+          <header class="role-head">
+            <h3 class="role-org">{job.company}</h3>
+            <span class="role-title">{job.role}</span>
+            <span class="role-period mono">{job.period}</span>
+          </header>
+          <p class="career-job-title">{job.title}</p>
+          <p class="career-job-context">{job.context}</p>
+          <ul class="career-job-points">
+            {job.points.map((point) => <li class="role-point"><strong>{point.title}</strong><span>{point.text}</span></li>)}
+          </ul>
+          <p class="result career-job-result"><span class="result-k">交付结果</span><span class="result-v">{job.result}</span></p>
+          <ul class="tag-row"><li class="tag">{job.category}</li></ul>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>

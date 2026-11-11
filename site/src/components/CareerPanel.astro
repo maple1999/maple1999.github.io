@@ -1,0 +1,163 @@
+---
+/**
+ * 单个岗位的完整面板。顺序：首屏与快速档案 → 关键指标 → 为什么是我 → 岗位匹配对照 →
+ * 工作经历 / 项目实践（顺序由 role.order 决定）→ 能力与背景 → 联系。
+ */
+import { Image } from 'astro:assets';
+import portrait from '../assets/portrait.jpg';
+import Icon from './Icon.astro';
+import CareerExperience from './CareerExperience.astro';
+import CareerProjects from './CareerProjects.astro';
+import type { CareerRole } from '../data/career-roles';
+
+interface Props { role: CareerRole }
+const { role } = Astro.props;
+const sections = { experience: CareerExperience, projects: CareerProjects } as const;
+---
+<section class="career-hero" aria-label={role.role}>
+  <div class="hero-glow a" aria-hidden="true"></div>
+  <div class="wrap career-hero-grid">
+    <div class="career-hero-copy">
+      <p class="eyebrow">求职方向 / {role.role}</p>
+      <h2 class="career-statement">{role.statement[0]}<br /><em>{role.statement[1]}</em></h2>
+      <p class="lede">{role.summary}</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href={role.resume} download><Icon name="download" />下载{role.short}简历<span class="career-file-type">PDF</span></a>
+        <a class="btn btn-ghost" href={`#${role.id}-fit`}>看岗位匹配<Icon name="arrow-right" /></a>
+        <a class="icon-btn" href={role.github} target="_blank" rel="noopener noreferrer" title="GitHub" aria-label="GitHub"><Icon name="github" /></a>
+        <a class="icon-btn" href={`mailto:${role.email}`} title="发送邮件" aria-label="发送邮件"><Icon name="mail" /></a>
+      </div>
+    </div>
+
+    <aside class="career-profile" aria-label="快速档案">
+      <figure class="portrait">
+        <Image src={portrait} alt="高世钊本人照片" width={480} densities={[1, 2]} format="webp" quality={82} loading="eager" />
+      </figure>
+      <dl class="career-facts">
+        {role.facts.map((fact) => <div class="career-fact"><dt class="mono">{fact.k}</dt><dd>{fact.v}</dd></div>)}
+      </dl>
+    </aside>
+  </div>
+
+  <div class="wrap">
+    <dl class="metrics">
+      {role.outcomes.map((item) => (
+        <div class="metric">
+          <dd class="metric-value"><span class="career-metric-number" data-value={item.value}>{item.value}</span><span class="career-metric-unit">{item.unit}</span></dd>
+          <dt class="metric-label">{item.label}</dt>
+          <dd class="metric-note">{item.note}</dd>
+        </div>
+      ))}
+    </dl>
+  </div>
+</section>
+
+<section class="section career-strengths" id={`${role.id}-strengths`} aria-labelledby={`${role.id}-strengths-heading`}>
+  <div class="wrap">
+    <header class="section-head">
+      <span class="eyebrow">个人优势</span>
+      <h2 class="section-title" id={`${role.id}-strengths-heading`}>{role.strengthsHeading}</h2>
+    </header>
+    <ol class="career-strength-list">
+      {role.strengths.map((item, i) => (
+        <li class="card research-card career-strength">
+          <span class="research-index mono">0{i + 1}</span>
+          <h3>{item.title}</h3>
+          <p>{item.text}</p>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<section class="section" id={`${role.id}-fit`} aria-labelledby={`${role.id}-fit-heading`}>
+  <div class="wrap">
+    <header class="section-head">
+      <span class="eyebrow">岗位匹配</span>
+      <h2 class="section-title" id={`${role.id}-fit-heading`}>{role.fit.heading}</h2>
+      <p class="lede">{role.fit.intro}</p>
+    </header>
+    <div class="review-list career-fit">
+      {role.fit.items.map((item) => (
+        <div class="review-row career-fit-row">
+          <div class="career-fit-need"><Icon name="check" /><span>{item.need}</span></div>
+          <p class="review-topic">{item.evidence}</p>
+          <a class="link-arrow" href={`#${role.id}-${item.anchor}`}>查看<Icon name="arrow-right" /></a>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+{role.order.map((key) => { const Section = sections[key]; return <Section role={role} />; })}
+
+<section class="section" id={`${role.id}-background`} aria-labelledby={`${role.id}-background-heading`}>
+  <div class="wrap">
+    <header class="section-head">
+      <span class="eyebrow">能力与背景</span>
+      <h2 class="section-title" id={`${role.id}-background-heading`}>{role.backgroundHeading}</h2>
+    </header>
+
+    <div class="career-capabilities">
+      {role.capabilities.map((ability) => (
+        <article class="card career-capability">
+          <span class="research-index mono">{ability.number}</span>
+          <h3 class="career-capability-title">{ability.title}</h3>
+          <p class="research-summary">{ability.text}</p>
+          <ul class="career-capability-items">{ability.items.map((item) => <li class="role-point">{item}</li>)}</ul>
+        </article>
+      ))}
+    </div>
+
+    <div class="about-grid career-background-grid">
+      <div>
+        <h3 class="block-label">教育经历</h3>
+        {role.education.map((education) => (
+          <article class="edu">
+            <header class="edu-head">
+              <h4 class="edu-school">{education.school}</h4>
+              <span class="edu-period mono">{education.period}</span>
+            </header>
+            <p class="edu-degree">{education.degree}</p>
+            {education.note.includes('联合培养') ? <p class="edu-joint">{education.note}</p> : <p class="edu-dept">{education.note}</p>}
+            <p class="edu-detail">{education.detail}</p>
+          </article>
+        ))}
+        <h3 class="block-label career-venture-label">{role.venture.title}</h3>
+        <p class="edu-detail">{role.venture.text}</p>
+      </div>
+
+      <div>
+        <article class="card pub-featured career-research">
+          <span class="eyebrow">{role.research.label}</span>
+          <div class="pub-meta">
+            <span class="venue-badge">{role.research.venue}</span>
+            <span class="pub-role">{role.research.heading}</span>
+          </div>
+          <h4 class="pub-title" lang="en">{role.research.paper}</h4>
+          <p class="pub-summary">{role.research.text}</p>
+          <p class="review-note">{role.research.status}</p>
+          <a class="link-arrow" href={role.research.link.href} target="_blank" rel="noopener noreferrer">{role.research.link.label}<Icon name="external" /></a>
+        </article>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section contact" id={`${role.id}-contact`} aria-labelledby={`${role.id}-contact-heading`}>
+  <div class="contact-glow" aria-hidden="true"></div>
+  <div class="wrap contact-inner">
+    <header class="section-head" style="align-items:center;text-align:center;margin-bottom:0">
+      <span class="eyebrow">联系我</span>
+      <h2 class="section-title" id={`${role.id}-contact-heading`} style="max-width:none">{role.contactHeading}</h2>
+    </header>
+    <a class="contact-mail" href={`mailto:${role.email}`}>{role.email}</a>
+    <p class="lede contact-body" style="max-width:52ch;margin-bottom:2.25rem">{role.contactIntro}</p>
+    <div class="contact-socials">
+      <a class="btn btn-ghost career-phone" href={role.phoneHref}><span class="mono">TEL</span>{role.phone}</a>
+      <a class="btn btn-ghost" href={role.github} target="_blank" rel="noopener noreferrer"><Icon name="github" />GitHub · {role.githubLabel}</a>
+      <a class="btn btn-primary" href={role.resume} download><Icon name="download" />下载{role.short}简历</a>
+    </div>
+    <p class="availability"><span class="status-dot" aria-hidden="true"></span>{role.availability}</p>
+  </div>
+</section>

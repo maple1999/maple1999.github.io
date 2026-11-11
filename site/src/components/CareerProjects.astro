@@ -1,0 +1,62 @@
+---
+import Icon from './Icon.astro';
+import type { CareerRole } from '../data/career-roles';
+interface Props { role: CareerRole }
+const { role } = Astro.props;
+const id = `${role.id}-projects`;
+---
+<section class="section" id={id} aria-labelledby={`${id}-heading`}>
+  <div class="wrap">
+    <header class="section-head">
+      <span class="eyebrow">项目实践</span>
+      <h2 class="section-title" id={`${id}-heading`}>{role.projectHeading}</h2>
+      <p class="lede">{role.projectIntro}</p>
+    </header>
+
+    <div class="project-list">
+      {role.projects.map((project) => (
+        <article class="project career-project" id={`${role.id}-${project.id}`}>
+          <div class="project-aside">
+            <span class="project-kind">{project.number} · {project.subtitle}</span>
+            <h3 class="project-title">{project.name}</h3>
+            {project.period && <span class="project-period">{project.period}</span>}
+            <p class="career-audience">{project.audience}</p>
+            <span class:list={['venue-badge', 'career-status', { muted: project.ongoing }]}>{project.status}</span>
+            <ul class="result-list">
+              {project.results.map((r) => <li class="result"><span class="result-k">{r.k}</span><span class="result-v">{r.v}</span></li>)}
+            </ul>
+          </div>
+
+          <div class="project-body">
+            <div>
+              <span class="field-label">问题</span>
+              <p class="field-body career-question">{project.question}</p>
+            </div>
+            <div>
+              <span class="field-label">{project.flowTitle}</span>
+              <ol class="career-flow">{project.flow.map((step) => <li>{step}</li>)}</ol>
+            </div>
+            <div>
+              <span class="field-label">我做了什么</span>
+              <p class="field-body">{project.work}</p>
+            </div>
+            <div>
+              <span class="field-label">已验证</span>
+              <p class="field-body">{project.evidence}</p>
+            </div>
+            <div>
+              <span class="field-label">{project.nextLabel}</span>
+              <p class="field-body">{project.next}</p>
+            </div>
+            <ul class="tag-row" aria-label="技术实现">{project.technologies.map((technology) => <li class="tag">{technology}</li>)}</ul>
+            {project.link && (
+              <div class="pub-links">
+                <a class="link-arrow" href={project.link.href} target="_blank" rel="noopener noreferrer">{project.link.label}<Icon name="external" /></a>
+              </div>
+            )}
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>

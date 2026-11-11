@@ -6,6 +6,7 @@ dist/
 
 # 截图回归产物
 .shots/
+.private/
 
 # 原始素材（成绩单含成绩与个人信息，不进公开仓库）
 # 对外公开的两份简历在 site/public/cv/、人像在 site/src/assets/，随站点发布
@@ -13,9 +14,14 @@ dist/
 /*.jpg
 /*.png
 
-# 服务器部署配置（含主机地址与路径，不必公开）
-deploy/
-site/scripts/deploy.mjs
+# 服务器配置与运行数据不公开；仅纳入汇报程序源码和测试
+deploy/*
+!deploy/visit-notify/
+deploy/visit-notify/*
+!deploy/visit-notify/notify.py
+!deploy/visit-notify/sessions.py
+!deploy/visit-notify/test_sessions.py
+__pycache__/
 
 # 环境与编辑器
 .env

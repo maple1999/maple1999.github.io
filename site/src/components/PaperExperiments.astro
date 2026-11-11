@@ -1,0 +1,51 @@
+---
+import { paper } from '../data/academic-paper';
+import { t, type Lang } from '../lib/i18n';
+import Icon from './Icon.astro';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const exp = paper.experiments;
+---
+<section class="paper-chapter" id="experiments" aria-labelledby="experiments-title">
+  <header class="paper-section-head"><span class="eyebrow">04 / Experiments{lang === 'zh' && ' · 实验与发现'}</span><h2 id="experiments-title">{t(exp.title, lang)}</h2><p>{t(exp.text, lang)}</p></header>
+  <paper-experiments>
+    <div class="experiment-tabs" role="tablist" aria-label={t(exp.label, lang)} hidden>
+      {exp.tabs.map((tab, i) => <button type="button" id={`study-tab-${tab.id}`} role="tab" aria-controls={`study-${tab.id}`} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1} data-study-tab={tab.id}>{t(tab.label, lang)}</button>)}
+    </div>
+    <article class="experiment-panel" id="study-scaling" data-study="scaling" aria-labelledby="scaling-title">
+      <header class="experiment-head"><p class="experiment-status">{t(exp.scaling.status, lang)}</p><h3 id="scaling-title">{t(exp.scaling.title, lang)}</h3><p class="experiment-subtitle">{exp.scaling.subtitle}</p></header>
+      <p class="experiment-motivation">{t(exp.scaling.motivation, lang)}</p>
+      <div class="experiment-layout experiment-layout--overview">
+        <div class="experiment-comparisons">
+          {exp.scaling.comparisons.map(comparison => <div class="experiment-display experiment-result" data-exp-result={`scaling-${comparison.id}`}>
+            <h4 class="comparison-name">{lang === 'en' ? 'vs. ' : '相比'}{t(exp.scaling.baselineOptions.find(option => option.id === comparison.id)!.label, lang)}</h4>
+            <div class="result-pair"><div><strong>{comparison.accuracy}<sup>pp</sup></strong><span>{t(exp.scaling.accuracyLabel, lang)}</span></div><div><strong class="result-cost">{comparison.cost}</strong><span>{t(comparison.costLabel, lang)}</span></div></div>
+            <p class="experiment-finding">{t(comparison.finding, lang)}</p>
+          </div>)}
+        </div>
+        <div class="experiment-reading experiment-reading--overview"><div><h4>{t(exp.contribution, lang)}</h4><p>{t(exp.scaling.contribution, lang)}</p></div><div><h4>{t(exp.next, lang)}</h4><p>{t(exp.scaling.next, lang)}</p></div><a class="paper-text-link" href="#project-test-time-scaling">{t(exp.read, lang)}<Icon name="arrow-right" /></a></div>
+      </div>
+    </article>
+    <article class="experiment-panel" id="study-transfer" data-study="transfer" aria-labelledby="transfer-title">
+      <header class="experiment-head"><p class="experiment-status">{t(exp.transfer.status, lang)}</p><h3 id="transfer-title">{t(exp.transfer.title, lang)}</h3><p class="experiment-subtitle">{exp.transfer.subtitle}</p></header>
+      <p class="experiment-motivation">{t(exp.transfer.motivation, lang)}</p>
+      <div class="experiment-layout"><div class="experiment-display transfer-display">
+        <div class="transfer-model"><span>Qwen2.5-VL</span><strong>−18.0<sup>%</sup></strong><p>{t(exp.transfer.qwen, lang)}</p></div>
+        <div class="transfer-model transfer-limit"><span>LLaVA-Video</span><strong>{t(exp.transfer.llava, lang)}</strong><p>{t(exp.transfer.llavaNote, lang)}</p></div>
+        <p class="experiment-finding">{t(exp.transfer.finding, lang)}</p>
+      </div><div class="experiment-reading"><h4>{t(exp.contribution, lang)}</h4><p>{t(exp.transfer.contribution, lang)}</p><h4>{t(exp.next, lang)}</h4><p>{t(exp.transfer.next, lang)}</p><a class="paper-text-link" href="#project-frame-sufficiency">{t(exp.read, lang)}<Icon name="arrow-right" /></a></div></div>
+    </article>
+    <article class="experiment-panel" id="study-counting" data-study="counting" aria-labelledby="counting-title">
+      <header class="experiment-head"><p class="experiment-status">{t(exp.counting.status, lang)}</p><h3 id="counting-title">{t(exp.counting.title, lang)}</h3><p class="experiment-subtitle">{exp.counting.subtitle}</p></header>
+      <p class="experiment-motivation">{t(exp.counting.motivation, lang)}</p>
+      <div class="experiment-layout experiment-layout--overview">
+        <div class="experiment-comparisons">
+          {exp.counting.datasets.map(dataset => <div class="experiment-display experiment-result" data-exp-result={`counting-${dataset.id}`}><h4 class="comparison-name">{dataset.label}</h4><div class="result-pair"><div><strong>{dataset.mae}</strong><span>{t(exp.counting.maeLabel, lang)}</span></div><div><strong class="result-cost">{dataset.obo}</strong><span>{t(exp.counting.oboLabel, lang)}</span></div></div></div>)}
+        </div>
+        <p class="experiment-finding">{t(exp.counting.finding, lang)}</p>
+        <div class="experiment-reading experiment-reading--overview"><div><h4>{t(exp.contribution, lang)}</h4><p>{t(exp.counting.contribution, lang)}</p></div><div><h4>{t(exp.next, lang)}</h4><p>{t(exp.counting.next, lang)}</p></div><a class="paper-text-link" href="#project-period-adaptive">{t(exp.read, lang)}<Icon name="arrow-right" /></a></div>
+      </div>
+    </article>
+  </paper-experiments>
+</section>
+<script>import '../scripts/academic-paper';</script>

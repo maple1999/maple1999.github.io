@@ -1,0 +1,387 @@
+/* ============================================================================
+   求职页：建立在学术页设计系统（global.css）之上。
+   岗位强调色 —— 产品经理沿用金色，视觉算法工程师用青色。--role 为注册的
+   颜色属性，切换岗位时整页的按钮、徽标、导航与卡片强调线随之平滑过渡。
+   ========================================================================== */
+
+@property --role {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #f0b429;
+}
+
+:root {
+  --role: var(--gold);
+  transition: --role 0.6s var(--ease);
+}
+html[data-role='vision'] { --role: var(--teal); }
+
+body.career {
+  --gold: var(--role);
+  --gold-soft: color-mix(in srgb, var(--role) 12%, transparent);
+  --gold-line: color-mix(in srgb, var(--role) 32%, transparent);
+  --glow-a: color-mix(in srgb, var(--role) 10%, transparent);
+}
+
+/* 脚本接管前就按 URL 决定显示哪个面板，避免闪烁 */
+[data-role-panel][hidden],
+html:not([data-role='vision']) #panel-vision,
+html[data-role='vision'] #panel-product { display: none; }
+
+.career-sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+/* ------------------------------------------------------------- 顶部导航 */
+
+.career-header-cv { display: inline-flex; align-items: center; gap: 0.4rem; }
+.career-header-cv svg { width: 14px; height: 14px; }
+.nav .career-brand .brand-mark { transition: color 0.6s var(--ease); }
+
+/* --------------------------------------------------------------- 页首 */
+
+.career-intro {
+  position: relative;
+  padding-top: calc(var(--nav-h) + clamp(2.5rem, 6vw, 4.5rem));
+  padding-bottom: clamp(1.5rem, 3vw, 2rem);
+}
+.career-name {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.4rem 1.3rem;
+  font-family: var(--font-sans);
+  font-weight: 650;
+  font-size: clamp(2.4rem, 6vw, 4.2rem);
+  letter-spacing: 0.02em;
+  line-height: 1.15;
+  margin-block: 1.2rem 1rem;
+}
+.career-name-tagline {
+  font-size: clamp(1rem, 1.8vw, 1.3rem);
+  font-weight: 400;
+  color: var(--text-muted);
+  letter-spacing: 0;
+}
+.career-intro .lede { max-width: 58ch; }
+
+/* ----------------------------------------------------------- 岗位切换
+   外层 .career-switch 是吸顶盒，脚本把它的 min-height 固定为展开高度，因此
+   收起时文档流高度不变（不会触发滚动锚定来回振荡）；只有内部 .career-switch-bar
+   视觉上收缩。外层透明且不拦截指针事件，露出的区域可以正常点击。 */
+
+.career-switch-sentinel { height: 1px; }
+
+.career-switch {
+  position: sticky;
+  top: var(--nav-h);
+  z-index: 90;
+  pointer-events: none;
+  overflow-anchor: none;
+}
+/* 初始化与尺寸测量期间关闭过渡，避免首帧或重算时出现折叠动画 */
+.career-switch[data-instant], .career-switch[data-instant] * { transition: none !important; }
+
+.career-switch-bar {
+  pointer-events: auto;
+  background: color-mix(in srgb, var(--bg) 86%, transparent);
+  backdrop-filter: saturate(180%) blur(14px);
+  -webkit-backdrop-filter: saturate(180%) blur(14px);
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.35s var(--ease);
+}
+.career-switch[data-compact='true'] .career-switch-bar { border-bottom-color: var(--border); }
+
+.career-switch-inner {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding-block: 1rem;
+  transition: padding 0.4s var(--ease);
+}
+.career-switch[data-compact='true'] .career-switch-inner { padding-block: 0.5rem; }
+
+.career-role-tabs {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  flex: 1;
+  max-width: 920px;
+  padding: 5px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--bg-inset);
+}
+.career-role-indicator {
+  position: absolute;
+  z-index: -1;
+  top: 5px;
+  bottom: 5px;
+  left: 5px;
+  width: calc((100% - 10px) / 2);
+  border-radius: 12px;
+  background: var(--bg-elev);
+  border: 1px solid var(--gold-line);
+  box-shadow: var(--shadow);
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.6s var(--ease);
+}
+.career-role-indicator::after {
+  content: '';
+  position: absolute;
+  left: 1.1rem;
+  width: 2.2rem;
+  bottom: -1px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--gold);
+  transition: background-color 0.6s var(--ease);
+}
+html[data-role='vision'] .career-role-indicator { transform: translateX(100%); }
+html[data-role-target='product'] .career-role-indicator { transform: translateX(0); }
+html[data-role-target='vision'] .career-role-indicator { transform: translateX(100%); }
+
+.career-role-tabs button {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0;
+  padding: 0.95rem 1.15rem;
+  border-radius: 12px;
+  text-align: left;
+  color: var(--text-muted);
+  line-height: 1.45;
+  transition: color 0.35s var(--ease), padding 0.4s var(--ease);
+}
+.career-switch[data-compact='true'] .career-role-tabs button { padding: 0.6rem 1rem; }
+.career-role-tabs button:hover { color: var(--text); }
+.career-role-tabs button[aria-selected='true'] { color: var(--text); }
+.career-role-tabs button:focus-visible { outline-color: var(--gold); outline-offset: -3px; }
+
+.career-tab-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.3rem 0.7rem; }
+.career-tab-head strong { font-size: 1.05rem; font-weight: 650; color: inherit; transition: color 0.35s var(--ease); }
+.career-role-tabs button[aria-selected='true'] .career-tab-head strong { color: var(--gold); }
+.career-tab-head .mono { font-size: 0.66rem; letter-spacing: 0.1em; color: var(--text-dim); }
+
+/* 折叠区用网格行 1fr → 0fr 过渡，高度未知也能平滑收起，且不改变按钮的上下内边距 */
+.career-tab-extra {
+  display: grid;
+  grid-template-rows: 1fr;
+  width: 100%;
+  margin-top: 0.6rem;
+  opacity: 1;
+  transition: grid-template-rows 0.4s var(--ease), opacity 0.3s var(--ease), margin-top 0.4s var(--ease);
+}
+.career-switch[data-compact='true'] .career-tab-extra { grid-template-rows: 0fr; opacity: 0; margin-top: 0; }
+.career-tab-extra-inner { display: block; min-height: 0; overflow: hidden; }
+.career-tab-pitch { display: block; font-size: 0.86rem; line-height: 1.6; color: var(--text-muted); }
+.career-tab-stats { display: flex; flex-wrap: wrap; gap: 0.35rem 0.9rem; margin-top: 0.55rem; }
+.career-tab-stats > span { display: inline-flex; align-items: baseline; gap: 0.3rem; font-size: 0.68rem; color: var(--text-dim); white-space: nowrap; }
+.career-tab-stats b { font-family: var(--font-display); font-size: 1.05rem; font-weight: 400; color: var(--text); letter-spacing: -0.01em; transition: color 0.35s var(--ease); }
+.career-role-tabs button[aria-selected='true'] .career-tab-stats b { color: var(--gold); }
+
+.career-switch-cv { flex-shrink: 0; margin-left: auto; }
+
+#career-content { overflow: clip; }
+[data-role-panel] { outline: none; }
+[data-role-panel]:focus-visible { outline: 2px solid var(--gold); outline-offset: -3px; }
+[data-role-panel] .section[id], [data-role-panel] article[id] { scroll-margin-top: calc(var(--nav-h) + 76px); }
+
+/* --------------------------------------------------------------- 首屏 */
+
+.career-hero {
+  position: relative;
+  overflow: hidden;
+  padding-block: clamp(2.5rem, 5vw, 4rem) clamp(2.5rem, 5vw, 4rem);
+}
+.career-hero .hero-glow.a { width: 40vw; height: 40vw; top: -14vw; right: -10vw; }
+.career-hero-grid {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(280px, 0.8fr);
+  gap: clamp(2rem, 6vw, 5rem);
+  align-items: start;
+}
+.career-hero-copy { padding-top: 0.5rem; }
+.career-statement {
+  font-family: var(--font-sans);
+  font-weight: 650;
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  margin-block: 1.1rem 1.3rem;
+}
+.career-statement em { font-style: normal; color: var(--gold); }
+.career-hero .lede { margin-bottom: 1.9rem; }
+.career-file-type {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 500;
+  opacity: 0.75;
+  border-left: 1px solid currentColor;
+  padding-left: 0.55rem;
+  margin-left: 0.15rem;
+}
+
+/* 快速档案卡 */
+.career-profile {
+  justify-self: end;
+  width: 100%;
+  max-width: 360px;
+  display: grid;
+  grid-template-columns: 116px minmax(0, 1fr);
+  gap: 1.25rem;
+  align-items: start;
+  padding: 1.25rem;
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.career-profile .portrait { margin: 0; }
+.career-profile .portrait::after { inset: 7px -7px -7px 7px; }
+.career-facts { display: flex; flex-direction: column; gap: 0.7rem; }
+.career-fact dt {
+  font-size: 0.64rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 0.1rem;
+}
+.career-fact dd { font-size: 0.84rem; line-height: 1.55; color: var(--text); }
+.career-fact:first-child dd { color: var(--gold); font-weight: 600; }
+
+.career-hero .metrics { margin-top: clamp(2.5rem, 5vw, 3.5rem); }
+.career-metric-number { font-variant-numeric: tabular-nums; }
+.career-metric-unit {
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0;
+  margin-left: 0.35rem;
+  color: var(--text-muted);
+}
+
+/* ----------------------------------------------------------- 个人优势 */
+
+.career-strengths { padding-block: clamp(3rem, 6vw, 5rem); }
+.career-strengths .section-head { margin-bottom: clamp(1.75rem, 4vw, 2.5rem); }
+.career-strength-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+.career-strength { gap: 0.7rem; }
+.career-strength h3 { font-size: 1.12rem; font-weight: 600; line-height: 1.45; }
+.career-strength p { font-size: 0.92rem; line-height: 1.72; color: var(--text-muted); }
+
+/* ----------------------------------------------------------- 岗位匹配 */
+
+.career-fit-row { grid-template-columns: minmax(170px, 0.75fr) minmax(0, 2fr) auto; align-items: start; padding-block: 1.15rem; }
+.career-fit-need { display: flex; align-items: flex-start; gap: 0.55rem; font-size: 0.95rem; font-weight: 600; line-height: 1.5; }
+.career-fit-need svg { width: 15px; height: 15px; flex-shrink: 0; margin-top: 0.3rem; color: var(--gold); }
+.career-fit-row .review-topic { color: var(--text-muted); line-height: 1.7; }
+.career-fit-row .link-arrow { white-space: nowrap; margin-top: 0.15rem; }
+
+/* ----------------------------------------------------------- 工作经历 */
+
+.career-job { --accent: var(--gold); }
+.career-job-title { font-size: 1.08rem; font-weight: 600; margin-bottom: 0.4rem; line-height: 1.5; }
+.career-job-context { font-size: 0.92rem; color: var(--text-muted); margin-bottom: 1rem; line-height: 1.7; }
+.career-job-points { display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 1.1rem; }
+.career-job-points .role-point { display: grid; grid-template-columns: 8.5em minmax(0, 1fr); gap: 0.6rem; }
+.career-job-points strong { font-size: 0.9rem; }
+.career-job-result { display: block; max-width: 62ch; margin-bottom: 1rem; }
+
+/* ----------------------------------------------------------- 项目实践 */
+
+.career-project { --accent: var(--gold); }
+.career-audience { font-size: 0.8rem; color: var(--text-dim); line-height: 1.6; }
+.career-status { align-self: flex-start; }
+.career-question { font-size: 1.05rem; color: var(--text); font-weight: 500; }
+.career-flow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0;
+}
+.career-flow li {
+  position: relative;
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  color: var(--text-muted);
+  padding: 0.3rem 0.65rem;
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  background: var(--bg-inset);
+}
+.career-flow li + li { margin-left: 1.5rem; }
+.career-flow li + li::before {
+  content: '→';
+  position: absolute;
+  left: -1.15rem;
+  top: 50%;
+  translate: 0 -50%;
+  color: var(--gold);
+  font-size: 0.8rem;
+}
+
+/* ----------------------------------------------------------- 能力与背景 */
+
+.career-capabilities {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.25rem;
+  margin-bottom: clamp(2.5rem, 5vw, 4rem);
+}
+.career-capability { display: flex; flex-direction: column; gap: 0.8rem; }
+.career-capability-title { font-size: 1.15rem; font-weight: 600; }
+.career-capability-items { display: flex; flex-direction: column; gap: 0.45rem; margin-top: 0.2rem; }
+.career-capability-items .role-point { font-size: 0.88rem; }
+.career-venture-label { margin-top: 2.5rem; }
+.career-research .eyebrow { margin-bottom: 1rem; }
+.career-research .pub-title { font-size: 1.15rem; }
+.career-research .review-note { margin-block: 0.4rem 1.2rem; }
+
+/* --------------------------------------------------------------- 联系 */
+
+.career-phone .mono { font-size: 0.68rem; letter-spacing: 0.1em; color: var(--text-dim); }
+.career-noscript { padding-block: 1.5rem; color: var(--text-muted); }
+
+/* ------------------------------------------------------------ 响应式 */
+
+@media (max-width: 1100px) {
+  .career-header-cv { display: none; }
+}
+@media (max-width: 900px) {
+  .career-strength-list, .career-capabilities { grid-template-columns: 1fr; }
+  .career-hero-grid { grid-template-columns: 1fr; gap: 2rem; }
+  .career-profile { justify-self: start; max-width: none; }
+}
+@media (max-width: 820px) {
+  .career-switch-cv { display: none; }
+  .career-role-tabs { max-width: none; }
+  .career-tab-stats { display: none; }
+  .career-fit-row { grid-template-columns: 1fr; gap: 0.5rem; }
+  .career-fit-row .link-arrow { justify-self: start; }
+}
+@media (max-width: 640px) {
+  .career-role-tabs button { padding: 0.7rem 0.75rem; }
+  .career-tab-head strong { font-size: 0.92rem; }
+  .career-tab-head .mono { display: none; }
+  .career-tab-extra { margin-top: 0.35rem; }
+  .career-tab-pitch { font-size: 0.76rem; }
+  .career-switch[data-compact='true'] .career-role-tabs button { padding: 0.5rem 0.7rem; }
+  .career-profile { grid-template-columns: 92px minmax(0, 1fr); gap: 1rem; padding: 1rem; }
+  .career-job-points .role-point { display: block; }
+  .career-job-points strong { display: block; margin-bottom: 0.15rem; }
+  .career-flow li + li { margin-left: 1.2rem; }
+  .career-flow li + li::before { left: -1rem; }
+}
+
+/* --------------------------------------------------------------- 打印 */
+
+@media print {
+  .career-switch, .career-noscript { display: none !important; }
+  #career-content [data-role-panel] { display: block !important; }
+  .career-intro { padding-top: 0; }
+}

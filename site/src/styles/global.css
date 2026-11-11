@@ -360,8 +360,14 @@ strong { font-weight: 600; color: var(--text); }
 }
 
 /* Mobile nav links collapse; tools stay */
-@media (max-width: 860px) {
+@media (max-width: 1100px) {
   .nav-links { display: none; }
+  .nav-tools { margin-left: auto; }
+  .nav-inner { gap: .75rem; }
+}
+@media (max-width: 480px) {
+  .nav .brand-text { display: none; }
+  .nav-inner { gap: .6rem; }
 }
 
 /* 窄屏上正文与波形距离更近，进一步压低背景存在感 */

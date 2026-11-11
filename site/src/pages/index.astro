@@ -1,25 +1,4 @@
 ---
-import Base from '../layouts/Base.astro';
-import Hero from '../components/Hero.astro';
-import Research from '../components/Research.astro';
-import Publications from '../components/Publications.astro';
-import Projects from '../components/Projects.astro';
-import Engineering from '../components/Engineering.astro';
-import References from '../components/References.astro';
-import About from '../components/About.astro';
-import Statement from '../components/Statement.astro';
-import Contact from '../components/Contact.astro';
-
-const lang = 'en' as const;
+import HomePage from '../components/HomePage.astro';
 ---
-<Base lang={lang}>
-  <Hero lang={lang} />
-  <Research lang={lang} />
-  <Publications lang={lang} />
-  <Projects lang={lang} />
-  <Engineering lang={lang} />
-  <References lang={lang} />
-  <About lang={lang} />
-  <Statement lang={lang} />
-  <Contact lang={lang} />
-</Base>
+<HomePage lang="zh" />

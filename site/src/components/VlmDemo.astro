@@ -1,0 +1,64 @@
+---
+import { type Lang } from '../lib/i18n';
+import '../styles/vlm-demo.css';
+interface Props { lang: Lang; mode: 'query' | 'routing' }
+const { lang, mode } = Astro.props;
+const en = lang === 'en';
+const query = mode === 'query';
+const steps = query
+  ? (en ? ['Choose the sharing scope', 'Select evidence jointly', 'Encode once', 'Answer each question'] : ['选择共享范围', '联合选择证据', '共享编码一次', '分别回答各问题'])
+  : (en ? ['Start with a small budget', 'Assess confidence', 'Choose a route', 'Use the selected context'] : ['从较小预算开始', '评估置信度', '选择推理路径', '利用选定的上下文回答']);
+---
+<figure class="concept-figure">
+  <vlm-demo data-mode={mode} data-language={lang} data-stage="0" data-scope="3" data-route="uncertain"
+    data-play-label={en ? 'Play' : '播放'} data-pause-label={en ? 'Pause' : '暂停'}
+    aria-label={en ? (query ? 'Query-axis scaling demonstration' : 'Adaptive routing demonstration') : (query ? '查询轴扩展演示' : '自适应路由演示')}>
+    <div class:list={['vlm-demo-canvas', { 'query-axis-visual': query }]}>
+      <div class="demo-heading"><span>{en ? 'Method illustration' : '方法流程演示'}</span><span class="demo-motion-mark" aria-hidden="true"><i></i><i></i><i></i></span></div>
+      {query ? <>
+        <p class="visual-label">{en ? 'One Video, Multiple Questions' : '一个视频，多个问题'}</p>
+        <div class="frame-strip demo-video" aria-hidden="true">{Array.from({ length: 8 }, (_, i) => <span data-frame={i} style={`--frame:${i}`}><i></i></span>)}</div>
+        <div class="query-scope demo-node" data-node="0">
+          <p class="scope-label">Sharing scope{!en && ' · 共享范围'}</p>
+          <div class="demo-choices" data-controls hidden role="group" aria-label={en ? 'Number of questions sharing observation' : '共享观察的问题数量'}>
+            {[1, 2, 3].map(n => <button type="button" data-scope-choice={n} aria-pressed={n === 3 ? 'true' : 'false'}>{n} {en ? (n === 1 ? 'question' : 'questions') : '个问题'}</button>)}
+          </div>
+          <p class="query-set"><span data-question="1">Q₁</span> · <span data-question="2">Q₂</span> · <span data-question="3">Q₃</span></p>
+        </div>
+        <span class="demo-connector" data-connector="1" aria-hidden="true">↓</span>
+        <div class="evidence-core demo-node" data-node="1">{en ? 'Joint Evidence Selection' : '联合证据选择'}<small>{en ? 'Cover the questions in scope' : '覆盖共享范围内的证据需求'}</small></div>
+        <span class="demo-connector" data-connector="2" aria-hidden="true">↓</span>
+        <div class="shared-encoding demo-node" data-node="2">{en ? 'Shared Visual Encoding' : '共享视觉编码'}<small>{en ? 'Encode once, reuse across questions' : '编码一次，跨问题复用'}</small><div class="encoding-track" aria-hidden="true"><i></i></div></div>
+        <div class="answer-fanout" aria-hidden="true">{[1, 2, 3].map(n => <span class="demo-connector" data-connector="3" data-question={n}>↓</span>)}</div>
+        <div class="query-answers">{['Q₁', 'Q₂', 'Q₃'].map((q, i) => <span class="demo-node" data-node="3" data-question={i + 1} style={`--answer-delay:${i * 180}ms`}>{en ? 'Answer' : '回答'} {q}</span>)}</div>
+      </> : <>
+        <p class="visual-label">{en ? 'More context, only when needed' : '只在需要时增加上下文'}</p>
+        <div class="demo-choices route-choice" data-controls hidden role="group" aria-label={en ? 'Illustrative confidence scenario' : '示意置信度情境'}>
+          <button type="button" data-route-choice="confident" aria-pressed="false">{en ? 'Confident' : '有把握'}</button>
+          <button type="button" data-route-choice="uncertain" aria-pressed="true">{en ? 'Uncertain' : '不确定'}</button>
+        </div>
+        <div class="routing-input demo-node" data-node="0"><p>{en ? 'Small frame budget' : '较小帧预算'}</p><div class="budget-frames" aria-hidden="true"><i></i><i></i><i></i><i></i></div></div>
+        <span class="demo-connector" data-connector="1" aria-hidden="true">↓</span>
+        <div class="evidence-core demo-node" data-node="1">{en ? 'Assess answer confidence' : '评估回答置信度'}<div class="confidence-indicator" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div></div>
+        <div class="route-branches">
+          <div class="demo-route" data-branch="confident"><span class="demo-connector" data-connector="2" aria-hidden="true">↙</span><small>{en ? 'Confident' : '置信度高'}</small><strong>{en ? 'Keep the budget' : '保持当前预算'}</strong></div>
+          <div class="demo-route" data-branch="uncertain"><span class="demo-connector" data-connector="2" aria-hidden="true">↘</span><small>{en ? 'Uncertain' : '不确定'}</small><strong>{en ? 'Add visual context' : '增加视觉上下文'}</strong></div>
+        </div>
+        <div class="routing-output demo-node" data-node="3">
+          <div class="output-frames" aria-hidden="true">{Array.from({ length: 8 }, (_, i) => <i data-extra={i >= 4 ? 'true' : 'false'} style={`--answer-delay:${i * 70}ms`}></i>)}</div>
+          <p data-routing-output>{en ? 'Answer with additional context' : '结合更多上下文回答'}</p>
+        </div>
+      </>}
+      <div class="demo-controls" data-controls hidden>
+        <div class="demo-step-reader" aria-live="off"><span class="demo-step-number" data-step-number>01 / 04</span><p data-step-caption>{steps[0]}</p></div>
+        <div class="demo-buttons"><button type="button" data-play aria-pressed="false">{en ? 'Play' : '播放'}</button><button type="button" data-next>{en ? 'Next step' : '下一步'}<span aria-hidden="true"> →</span></button></div>
+        <div class="demo-progress" aria-hidden="true">{steps.map((_, i) => <span data-progress={i}></span>)}</div>
+      </div>
+      <div hidden data-step-labels>{steps.map(label => <span>{label}</span>)}</div>
+    </div>
+  </vlm-demo>
+  <figcaption>{en ? (query ? 'Change the sharing scope and follow one observation through to separate answers.' : 'Switch confidence scenarios to follow the two inference paths.') : (query ? '切换共享范围，观察一次视觉编码如何服务多个独立回答。' : '切换置信度情境，查看两条推理路径。')}</figcaption>
+</figure>
+<script>
+  import '../scripts/vlm-demo';
+</script>

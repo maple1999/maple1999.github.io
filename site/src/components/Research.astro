@@ -1,34 +1,58 @@
 ---
-import { researchAreas, ui } from '../data/profile';
+import { researchInterests as research, statement, links } from '../data/profile';
+import { paper } from '../data/academic-paper';
+import Icon from './Icon.astro';
+import '../styles/research.css';
 import { t, type Lang } from '../lib/i18n';
 
 interface Props { lang: Lang }
 const { lang } = Astro.props;
-const s = ui.sections.research;
-const accents = ['gold', 'teal', 'violet'];
 ---
-<section class="section" id="research">
+<section class="section paper-chapter research-interests" id="conclusion" aria-labelledby="research-title">
+  <span id="research" class="paper-anchor" aria-hidden="true"></span>
   <div class="wrap">
     <header class="section-head reveal">
-      <span class="eyebrow">{t(s.eyebrow, lang)}</span>
-      <h2 class="section-title">{t(s.title, lang)}</h2>
+      <span class="eyebrow">{t(paper.conclusion.label, lang)}</span>
+      <h2 class="section-title" id="research-title">{t(paper.conclusion.title, lang)}</h2>
+      <p class="lede">{t(research.introduction, lang)}</p>
     </header>
 
-    <div class="research-grid">
-      {researchAreas.map((area, i) => (
-        <article class="card research-card reveal"
-                 data-accent={accents[i]}
-                 style={`--reveal-delay:${i * 90}ms`}>
-          <span class="research-index mono">{area.index}</span>
-          <h3 class="research-title">{t(area.title, lang)}</h3>
-          <p class="research-summary" set:html={t(area.summary, lang)} />
-          <ul class="tag-row">
-            {(lang === 'en' ? area.keywords : area.keywordsZh).map((k) => (
-              <li class="tag">{k}</li>
-            ))}
-          </ul>
-        </article>
-      ))}
+    <research-explorer class="research-explorer reveal" data-direction="representation">
+      <div class="agenda-reader">
+        <div class="agenda-tabs" role="tablist" aria-label={t(research.explore, lang)} hidden>
+          {research.directions.map((direction, index) => (
+            <button type="button" role="tab" id={`research-tab-${direction.id}`}
+              data-research-tab={direction.id} data-accent={direction.accent}
+              aria-controls={`research-panel-${direction.id}`} aria-selected={index === 0 ? 'true' : 'false'}
+              tabindex={index === 0 ? 0 : -1}>
+              {t(direction.tabLabel, lang)}
+            </button>
+          ))}
+        </div>
+        <div class="agenda-panels">
+          {research.directions.map((direction) => (
+            <article class="agenda-panel" id={`research-panel-${direction.id}`}
+              data-research-panel={direction.id} data-accent={direction.accent} aria-labelledby={`research-heading-${direction.id}`}>
+              <h3 id={`research-heading-${direction.id}`}>{t(direction.title, lang)}</h3>
+              <p class="agenda-summary">{t(direction.summary, lang)}</p>
+              <dl class="agenda-questions">
+                <div><dt>{t(research.inquiryLabel, lang)}</dt><dd>{t(direction.inquiry, lang)}</dd></div>
+                <div><dt>{t(research.approachLabel, lang)}</dt><dd>{t(direction.approach, lang)}</dd></div>
+              </dl>
+            </article>
+          ))}
+        </div>
+      </div>
+    </research-explorer>
+
+    <div class="paper-closing" id="contact">
+      <p>{t(paper.conclusion.contribution, lang)}</p>
+      <p>{t(statement.note, lang)}</p>
+      <a class="paper-text-link" href={`mailto:${links.email}`}>{links.email}<Icon name="arrow-right" /></a>
     </div>
   </div>
 </section>
+
+<script>
+  import '../scripts/research';
+</script>

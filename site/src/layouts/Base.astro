@@ -4,15 +4,15 @@ import Icon from '../components/Icon.astro';
 import { site, identity, links, ui } from '../data/profile';
 import { t, other, type Lang } from '../lib/i18n';
 
-interface Props { lang: Lang }
-const { lang } = Astro.props;
+interface Props { lang: Lang; paperMode?: boolean }
+const { lang, paperMode = false } = Astro.props;
 
 const alt = other(lang);
-const altHref = alt === 'en' ? '/' : '/zh/';
-const selfHref = lang === 'en' ? '/' : '/zh/';
+const altHref = alt === 'en' ? '/academic/' : '/academic/zh/';
+const selfHref = lang === 'en' ? '/academic/' : '/academic/zh/';
 
 /** 本次构建的站点根地址，由 astro.config.mjs 的 SITE_URL 决定 */
-const base = Astro.site ?? new URL('https://maple1999.github.io');
+const base = Astro.site ?? new URL('https://www.mapletech.top');
 const abs = (p: string) => new URL(p, base).href;
 const canonical = abs(selfHref);
 
@@ -29,7 +29,7 @@ const jsonLd = {
   '@type': 'Person',
   name: 'Shizhao Gao',
   alternateName: '高世钊',
-  url: base.href,
+  url: canonical,
   image: abs('/portrait.jpg'),
   email: `mailto:${links.email}`,
   jobTitle: 'M.Eng. Researcher in Artificial Intelligence',
@@ -45,7 +45,8 @@ const jsonLd = {
   knowsAbout: [
     'Computer Vision', 'Video Understanding', 'Self-Supervised Learning',
     'Repetitive Action Counting', 'Skeleton-Based Action Recognition',
-    'Video-Language Models', 'Efficient Inference',
+    'Video-Language Models', 'Efficient Inference', 'Test-Time Scaling', 'Long-Video Reasoning', 'Temporal Representation Learning',
+    'Multimodal Representation Learning', 'Multimodal Reasoning',
   ],
   sameAs: [links.scholar, links.github, links.orcid],
 };
@@ -62,9 +63,9 @@ const jsonLd = {
   <meta name="theme-color" content="#fbfaf7" media="(prefers-color-scheme: light)" />
 
   <link rel="canonical" href={canonical} />
-  <link rel="alternate" hreflang="en" href={abs('/')} />
-  <link rel="alternate" hreflang="zh-CN" href={abs('/zh/')} />
-  <link rel="alternate" hreflang="x-default" href={abs('/')} />
+  <link rel="alternate" hreflang="en" href={abs('/academic/')} />
+  <link rel="alternate" hreflang="zh-CN" href={abs('/academic/zh/')} />
+  <link rel="alternate" hreflang="x-default" href={abs('/academic/')} />
   {noindex && <meta name="robots" content="noindex, nofollow" />}
 
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
@@ -106,12 +107,12 @@ const jsonLd = {
   </script>
 </head>
 
-<body>
+<body class:list={{ 'academic-paper': paperMode }}>
   <a class="skip-link" href="#main">{lang === 'en' ? 'Skip to content' : '跳到主要内容'}</a>
 
   <header class="nav" id="nav" data-scrolled="false">
     <div class="nav-inner">
-      <a class="brand" href={selfHref} aria-label={t(identity.name, lang)}>
+      <a class="brand" href="/" aria-label={lang === 'en' ? 'Shizhao Gao · Homepage' : '高世钊 · 返回主页'}>
         <svg class="brand-mark" viewBox="0 0 64 64" aria-hidden="true">
           <path d="M6 32c3-11 6-11 9 0s6 11 10 0 7.5-13 12.5 0 8.5 11 12.5 2"
                 fill="none" stroke="currentColor" stroke-width="4"
@@ -120,11 +121,16 @@ const jsonLd = {
         <span class="brand-text">{t(identity.name, lang)}</span>
       </a>
 
-      <nav class="nav-links" aria-label={lang === 'en' ? 'Sections' : '章节导航'}>
+      {paperMode ? <nav class="paper-utilities" aria-label={lang === 'en' ? 'Research resources' : '研究资源'}>
+        <a href="#publications">{lang === 'en' ? 'Publications' : '论文'}</a>
+        <a href="https://github.com/maple1999/frame-sufficiency-video-vlms" target="_blank" rel="noopener noreferrer">{lang === 'en' ? 'Code' : '代码'}</a>
+        <a href="#contact">{lang === 'en' ? 'Contact' : '联系'}</a>
+        <a href={links.cv[lang]} download class="paper-cv-link">CV <Icon name="download" /></a>
+      </nav> : <nav class="nav-links" aria-label={lang === 'en' ? 'Sections' : '章节导航'}>
         {ui.nav.map((item) => (
           <a class="nav-link" href={`#${item.id}`} data-nav={item.id}>{item[lang]}</a>
         ))}
-      </nav>
+      </nav>}
 
       <div class="nav-tools">
         <a class="icon-btn lang-btn" href={altHref} id="lang-toggle"
@@ -157,6 +163,7 @@ const jsonLd = {
         )}
       </div>
       <div class="footer-links">
+        <a class="footer-link" href="/">{lang === 'en' ? 'Homepage' : '返回主页'}</a>
         <a class="footer-link" href={`mailto:${links.email}`}>{t(ui.actions.email, lang)}</a>
         <a class="footer-link" href={links.scholar} target="_blank" rel="noopener noreferrer">Google Scholar</a>
         <a class="footer-link" href={links.github} target="_blank" rel="noopener noreferrer">GitHub</a>
@@ -205,18 +212,38 @@ const jsonLd = {
       .filter((el): el is HTMLElement => !!el);
 
     if (sections.length) {
-      const spy = new IntersectionObserver(
-        (entries) => {
-          for (const e of entries) {
-            if (!e.isIntersecting) continue;
-            navLinks.forEach((l) =>
-              l.setAttribute('aria-current', String(l.dataset.nav === e.target.id)),
-            );
+      let pending = false;
+      let previousSection = '';
+      const update = () => {
+        let current = sections[0].id;
+        const marker = window.innerWidth <= 1100 ? 160 : 140;
+        sections.forEach(section => { if (section.getBoundingClientRect().top <= marker) current = section.id; });
+        navLinks.forEach(link => link.setAttribute('aria-current', String(link.dataset.nav === current)));
+        // Keep the active chapter readable inside the narrow-screen chapter strip.
+        if (current !== previousSection && window.innerWidth <= 1100) {
+          const activeLink = navLinks.find(link => link.dataset.nav === current);
+          const strip = activeLink?.closest<HTMLElement>('.paper-toc');
+          if (activeLink && strip) {
+            const linkBox = activeLink.getBoundingClientRect();
+            const stripBox = strip.getBoundingClientRect();
+            if (linkBox.left < stripBox.left + 8 || linkBox.right > stripBox.right - 8) {
+              strip.scrollLeft += linkBox.left - stripBox.left - (strip.clientWidth - linkBox.width) / 2;
+            }
           }
-        },
-        { rootMargin: '-45% 0px -50% 0px', threshold: 0 },
-      );
-      sections.forEach((s) => spy.observe(s));
+        }
+        previousSection = current;
+        const progress = document.getElementById('paper-reading-progress');
+        if (progress) {
+          const length = document.documentElement.scrollHeight - innerHeight;
+          progress.style.width = `${length > 0 ? Math.min(100, Math.max(0, scrollY / length * 100)) : 100}%`;
+        }
+        pending = false;
+      };
+      const schedule = () => { if (!pending) { pending = true; requestAnimationFrame(update); } };
+      window.addEventListener('scroll', schedule, { passive: true });
+      window.addEventListener('resize', schedule);
+      document.addEventListener('toggle', schedule, true);
+      update();
     }
 
     // ---------- 滚动渐显 ----------

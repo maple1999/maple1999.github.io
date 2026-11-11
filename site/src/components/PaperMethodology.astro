@@ -1,0 +1,15 @@
+---
+import { paper } from '../data/academic-paper';
+import { t, type Lang } from '../lib/i18n';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const method = paper.methodology;
+---
+<section class="paper-chapter" id="methodology" aria-labelledby="method-title">
+  <header class="paper-section-head"><span class="eyebrow">03 / Methodology{lang === 'zh' && ' · 研究方法'}</span><h2 id="method-title">{t(method.title, lang)}</h2><p>{t(method.text, lang)}</p></header>
+  <div class="workflow-grid">{method.steps.map(step => <div class="workflow-step">
+    <div class="workflow-title"><h3>{t(step.title, lang)}</h3></div>
+    <p>{t(step.text, lang)}</p>
+  </div>)}</div>
+  <aside class="paper-margin-note"><span>{t(method.role, lang)}</span><p>{t(method.roleText, lang)}</p></aside>
+</section>

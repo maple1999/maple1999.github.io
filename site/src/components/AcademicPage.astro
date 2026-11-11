@@ -1,0 +1,82 @@
+---
+import { Image } from 'astro:assets';
+import portrait from '../assets/portrait.jpg';
+import Base from '../layouts/Base.astro';
+import Icon from './Icon.astro';
+import ResearchHighlights from './ResearchHighlights.astro';
+import Publications from './Publications.astro';
+import Engineering from './Engineering.astro';
+import References from './References.astro';
+import { academic } from '../data/academic';
+import { identity, links, education, skills, service } from '../data/profile';
+import { t } from '../lib/i18n';
+import '../styles/academic.css';
+interface Props { lang: 'en' | 'zh' }
+const { lang } = Astro.props;
+const en = lang === 'en';
+---
+<Base lang={lang} paperMode>
+  <div class="academic-layout">
+    <aside class="academic-sidebar"><nav class="paper-toc" aria-label={en ? 'Page sections' : '页面栏目'}>
+      {academic.nav.map(item => <a class="nav-link" href={`#${item.id}`} data-nav={item.id}>{t(item, lang)}</a>)}
+    </nav></aside>
+    <div class="academic-document">
+      <section class="academic-intro" id="top" aria-labelledby="academic-name">
+        <span id="introduction" class="anchor-alias" aria-hidden="true"></span>
+        <div class="intro-identity"><div><p class="application-label">{en ? 'Ph.D. applicant · Fall 2027' : '申请 2027 年入学博士'}</p><h1 id="academic-name">{t(identity.name, lang)}</h1></div><Image src={portrait} width={88} height={88} format="webp" alt={t(identity.name, lang)} /></div>
+        <h2 class="intro-focus">{t(academic.focus, lang)}</h2>
+        <div class="intro-evidence"><a href="#publications"><strong>CVPR 2026 Findings</strong><span>{en ? 'Published · First author' : '已发表 · 第一作者'}</span></a><a href="#publications"><strong>Pattern Recognition</strong><span>{en ? 'Accepted · Second author' : '已录用 · 第二作者'}</span></a></div>
+        <div class="intro-copy"><p>{t(academic.intro, lang)}</p></div>
+        <p class="intro-affiliation">{en ? 'M.Eng. in AI · Fujian Agriculture and Forestry University' : '福建农林大学 · 人工智能硕士在读'}<br />{en ? 'Joint research training · Quanzhou Institute of Equipment Manufacturing, Haixi Institute, CAS' : '中国科学院海西研究院泉州装备制造研究所联合培养'}</p>
+        <div class="intro-actions"><a class="btn btn-primary" href={links.cv[lang]} download>{en ? 'Academic CV' : '学术简历'}<Icon name="download" /></a><a class="academic-link" href={`mailto:${links.email}`}>{en ? 'Email me' : '邮件联系'}<Icon name="mail" /></a><a class="academic-link" href="#highlights">{en ? 'Explore research' : '了解研究'}<Icon name="arrow-right" /></a></div>
+      </section>
+      <ResearchHighlights lang={lang} />
+      <Publications lang={lang} />
+      <section class="academic-section" id="interests" aria-labelledby="interests-title">
+        <span id="research" class="anchor-alias" aria-hidden="true"></span><span id="conclusion" class="anchor-alias" aria-hidden="true"></span>
+        <header class="academic-heading"><p class="eyebrow">{en ? 'Research interests' : '研究兴趣'}</p><h2 id="interests-title">{en ? 'What I want to understand next.' : '下一步，我希望理解什么。'}</h2></header>
+        <p class="section-intro">{t(academic.ambition, lang)}</p>
+        <p class="section-intro interest-context">{t(academic.interestsIntro, lang)}</p>
+        <div class="interest-grid">{academic.questions.map(item => <article><p class="interest-label">{t(item.label, lang)}</p><h3>{t(item.title, lang)}</h3><p>{t(item.text, lang)}</p></article>)}</div>
+        <p class="research-trajectory">{t(academic.trajectory, lang)}</p>
+      </section>
+      <section class="academic-section" id="background" aria-labelledby="background-title">
+        <span id="supporting" class="anchor-alias" aria-hidden="true"></span><span id="methodology" class="anchor-alias" aria-hidden="true"></span>
+        <header class="academic-heading"><p class="eyebrow">{en ? 'Background' : '研究背景'}</p><h2 id="background-title">{en ? 'Research, with the ability to build.' : '研究能力，也有实现能力。'}</h2></header>
+        <details class="background-details" id="about"><summary>{en ? 'Education, research skills & service' : '教育经历、科研能力与学术服务'}<span aria-hidden="true">+</span></summary><div class="background-content">
+          <div class="education-list">{education.map(item => <article><p class="background-meta">{t(item.period, lang)}</p><h3>{t(item.school, lang)}</h3><p>{t(item.degree, lang)}</p>{item.joint && <p>{t(item.joint, lang)}</p>}<p set:html={t(item.detail, lang)} /></article>)}</div>
+          <div class="background-skills">{skills.slice(0, 2).map(group => <div><h3>{t(group.group, lang)}</h3><p>{group.items.join(' · ')}</p></div>)}</div>
+          <div class="background-service">{service.slice(0, 2).map(item => <div><h3>{t(item.title, lang)}</h3><p set:html={t(item.text, lang)} /></div>)}</div>
+        </div></details>
+        <details class="background-details"><summary>{en ? 'Engineering & professional experience' : '工程与职业经历'}<span aria-hidden="true">+</span></summary><Engineering lang={lang} /></details>
+        <details class="background-details"><summary>{en ? 'Research supervisors' : '科研导师'}<span aria-hidden="true">+</span></summary><References lang={lang} /></details>
+      </section>
+      <section class="academic-section academic-contact" id="contact" aria-labelledby="contact-title">
+        <header class="academic-heading"><p class="eyebrow">{en ? 'Contact' : '联系'}</p><h2 id="contact-title">{en ? 'Let’s talk research.' : '聊聊研究。'}</h2></header>
+        <p>{en ? 'I am seeking Ph.D. opportunities starting in 2027 in multimodal learning and reasoning. I would be glad to discuss my research, potential projects, and how I could contribute to your group.' : '我正在申请 2027 年入学的多模态学习与推理方向博士项目，欢迎交流我的研究、可能的课题，以及我能为课题组做出的贡献。'}</p>
+        <a class="contact-email" href={`mailto:${links.email}`}>{links.email}<Icon name="arrow-right" /></a>
+        <div class="contact-profiles">{[{ label: 'Google Scholar', href: links.scholar }, { label: 'GitHub', href: links.github }, { label: 'ORCID', href: links.orcid }].map(item => <a class="academic-link" href={item.href} target="_blank" rel="noopener noreferrer">{item.label}<Icon name="external" /></a>)}</div>
+      </section>
+    </div>
+  </div>
+</Base>
+<script>
+  function revealTarget() {
+    let id: string;
+    try { id = decodeURIComponent(location.hash.slice(1)); } catch { return; }
+    const target = document.getElementById(id);
+    if (!target) return;
+    let parent: HTMLElement | null = target;
+    let opened = false;
+    while (parent) {
+      if (parent instanceof HTMLDetailsElement && !parent.open) { parent.open = true; opened = true; }
+      parent = parent.parentElement;
+    }
+    if (opened) requestAnimationFrame(() => target.scrollIntoView({ block: 'start', behavior: 'instant' }));
+  }
+  addEventListener('hashchange', revealTarget);
+  revealTarget();
+  let closed: HTMLDetailsElement[] = [];
+  addEventListener('beforeprint', () => { closed = [...document.querySelectorAll<HTMLDetailsElement>('main details:not([open])')]; closed.forEach(element => element.open = true); });
+  addEventListener('afterprint', () => closed.forEach(element => element.open = false));
+</script>

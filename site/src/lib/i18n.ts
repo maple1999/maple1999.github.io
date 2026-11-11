@@ -13,4 +13,4 @@ export const other = (lang: Lang): Lang => (lang === 'en' ? 'zh' : 'en');
 
 /** 生成对应语言的站内路径 */
 export const path = (lang: Lang, hash = ''): string =>
-  (lang === 'en' ? '/' : '/zh/') + (hash ? `#${hash}` : '');
+  (lang === 'en' ? '/academic/' : '/academic/zh/') + (hash ? `#${hash}` : '');

@@ -26,10 +26,10 @@ if (!executablePath) {
 await mkdir(OUT, { recursive: true });
 
 const TARGETS = [
-  { name: 'en-dark', url: '/', theme: 'dark', w: 1440, h: 900 },
-  { name: 'en-light', url: '/', theme: 'light', w: 1440, h: 900 },
-  { name: 'zh-dark', url: '/zh/', theme: 'dark', w: 1440, h: 900 },
-  { name: 'mobile-en', url: '/', theme: 'dark', w: 390, h: 844 },
+  { name: 'en-dark', url: '/academic/', theme: 'dark', w: 1440, h: 900 },
+  { name: 'en-light', url: '/academic/', theme: 'light', w: 1440, h: 900 },
+  { name: 'zh-dark', url: '/academic/zh/', theme: 'dark', w: 1440, h: 900 },
+  { name: 'mobile-en', url: '/academic/', theme: 'dark', w: 390, h: 844 },
 ];
 
 const browser = await puppeteer.launch({

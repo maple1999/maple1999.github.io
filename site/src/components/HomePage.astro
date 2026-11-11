@@ -1,0 +1,207 @@
+---
+/**
+ * 入口主页：`/`（中文）与 `/en/`（英文）共用。
+ * 复用学术页的设计系统（global.css），但不引入学术页的布局与组件。
+ */
+import '../styles/global.css';
+import '../styles/home.css';
+import { Image } from 'astro:assets';
+import portrait from '../assets/portrait.jpg';
+import Icon from './Icon.astro';
+import { home } from '../data/home';
+import { links, site } from '../data/profile';
+import { t, type Lang } from '../lib/i18n';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const alt: Lang = lang === 'en' ? 'zh' : 'en';
+const selfPath = lang === 'en' ? '/en/' : '/';
+const altPath = alt === 'en' ? '/en/' : '/';
+const base = Astro.site ?? new URL('https://www.mapletech.top');
+const abs = (p: string) => new URL(p, base).href;
+const canonical = abs(selfPath);
+const noindex = process.env.NOINDEX === '1';
+const title = t(home.title, lang);
+const description = t(home.description, lang);
+const year = 2026;
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: lang === 'en' ? 'Shizhao Gao · Homepage' : '高世钊 · 个人主页',
+  url: canonical,
+  inLanguage: site.locales[lang],
+  author: { '@type': 'Person', name: 'Shizhao Gao', alternateName: '高世钊', url: abs('/academic/'), sameAs: [links.scholar, links.github, links.orcid] },
+};
+const academic = home.choices.academic;
+const career = home.choices.career;
+---
+<!doctype html>
+<html lang={site.locales[lang]} data-lang={lang}>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <meta name="author" content="Shizhao Gao" />
+  <meta name="theme-color" content="#0a0c10" media="(prefers-color-scheme: dark)" />
+  <meta name="theme-color" content="#fbfaf7" media="(prefers-color-scheme: light)" />
+  <link rel="canonical" href={canonical} />
+  <link rel="alternate" hreflang="zh-CN" href={abs('/')} />
+  <link rel="alternate" hreflang="en" href={abs('/en/')} />
+  <link rel="alternate" hreflang="x-default" href={abs('/')} />
+  {noindex && <meta name="robots" content="noindex, nofollow" />}
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="/favicon.svg" />
+  <link rel="preload" href="/fonts/InstrumentSerif-Regular.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/fonts/Inter-Variable.woff2" as="font" type="font/woff2" crossorigin />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Shizhao Gao" />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:url" content={canonical} />
+  <meta property="og:locale" content={lang === 'en' ? 'en_US' : 'zh_CN'} />
+  <meta property="og:locale:alternate" content={lang === 'en' ? 'zh_CN' : 'en_US'} />
+  <meta property="og:image" content={abs('/portrait.jpg')} />
+  <meta property="og:image:width" content="600" />
+  <meta property="og:image:height" content="600" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content={title} />
+  <meta name="twitter:description" content={description} />
+  <meta name="twitter:image" content={abs('/portrait.jpg')} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+  <!-- 主题在首次绘制前确定，与学术页共用同一个 localStorage 键，跨页面保持一致 -->
+  <script is:inline>
+    (function () {
+      var d = document.documentElement;
+      try { d.dataset.theme = localStorage.getItem('theme') || 'dark'; } catch (e) { d.dataset.theme = 'dark'; }
+    })();
+  </script>
+</head>
+<body class="home">
+  <a class="skip-link" href="#main">{t(home.actions.skip, lang)}</a>
+
+  <header class="nav" id="nav" data-scrolled="false">
+    <div class="nav-inner">
+      <a class="brand" href={selfPath} aria-label={t(home.actions.brand, lang)}>
+        <svg class="brand-mark" viewBox="0 0 64 64" aria-hidden="true">
+          <path d="M6 32c3-11 6-11 9 0s6 11 10 0 7.5-13 12.5 0 8.5 11 12.5 2" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="brand-text">{t(home.name, lang)}</span>
+      </a>
+      <span class="home-domain mono" aria-hidden="true">mapletech.top</span>
+      <div class="nav-tools">
+        <a class="icon-btn lang-btn" href={altPath} id="lang-toggle" hreflang={site.locales[alt]} title={t(home.actions.switchLangTitle, lang)}>{t(home.actions.switchLang, lang)}</a>
+        <button class="icon-btn" id="theme-toggle" type="button" title={t(home.actions.toggleTheme, lang)} aria-label={t(home.actions.toggleTheme, lang)}>
+          <Icon name="sun" class="icon-sun" />
+          <Icon name="moon" class="icon-moon" />
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="home-hero" aria-labelledby="home-title">
+      <div class="hero-glow a" aria-hidden="true"></div>
+      <div class="hero-glow b" aria-hidden="true"></div>
+      <canvas class="home-wave" id="home-wave" aria-hidden="true"></canvas>
+      <noscript>
+        <svg class="home-wave" viewBox="0 0 1200 320" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M0 160c40-70 70-70 110 0s70 70 105 0 60-80 100 0 60 70 95 0 55-85 90 0 55 70 85 0 50-90 80 0 50 70 75 0 45-95 70 0 45 70 65 0 40-100 60 0 40 70 55 0 35-105 50 0 35 70 45 0" fill="none" stroke="var(--gold)" stroke-width="1.4" stroke-linecap="round" />
+          <path d="M0 230c50-55 85-55 130 0s80 55 120 0 70-60 110 0 65 55 100 0 60-65 90 0 55 55 80 0 50-70 70 0 45 55 60 0 40-75 55 0 40 55 50 0 35-80 45 0 30 55 40 0" fill="none" stroke="var(--teal)" stroke-width="1.1" stroke-linecap="round" />
+        </svg>
+      </noscript>
+
+      <div class="wrap hero-inner">
+        <div class="home-identity hero-in">
+          <Image class="home-portrait" src={portrait} alt={lang === 'en' ? 'Portrait of Shizhao Gao' : '高世钊本人照片'} width={72} height={72} densities={[1, 2]} format="webp" loading="eager" />
+          <p class="hero-status" style="margin:0"><span class="status-dot" aria-hidden="true"></span>{t(home.status, lang)}</p>
+        </div>
+
+        <h1 class="display-name home-name hero-in" id="home-title" style="--d:60ms">
+          {t(home.name, lang)}<span class="home-alt-name">{t(home.altName, lang)}</span>
+        </h1>
+
+        <p class="hero-tagline hero-in" style="--d:130ms" set:html={t(home.tagline, lang)} />
+        <p class="lede home-lede hero-in" style="--d:180ms">{t(home.lede, lang)}</p>
+
+        <ul class="chips hero-in" style="--d:230ms">
+          {home.chips.map((c) => <li class="chip">{t(c, lang)}</li>)}
+        </ul>
+      </div>
+
+      <nav class="wrap home-choices hero-in" style="--d:300ms" aria-label={t(home.choicesLabel, lang)}>
+        <article class="home-choice home-academic" data-accent="gold">
+          <a class="home-choice-main" href="/academic/" aria-label={t(academic.ariaLabel, lang)}>
+            <div class="home-choice-top"><span class="eyebrow">{t(academic.kicker, lang)}</span><span class="home-choice-index mono" aria-hidden="true">01</span></div>
+            <h2 class="home-choice-title">{t(academic.title, lang)}<span class="home-choice-arrow"><Icon name="arrow-right" /></span></h2>
+            <p class="home-choice-text">{t(academic.text, lang)}</p>
+            <ul class="tag-row">{academic.tags[lang].map((tag) => <li class="tag">{tag}</li>)}</ul>
+            <span class="link-arrow home-choice-cta">{t(academic.cta, lang)}<Icon name="arrow-right" /></span>
+          </a>
+          <div class="home-choice-bottom"><span>{t(academic.footNote, lang)}</span><div>{academic.links.map((link, i) => (<>{i > 0 && <span aria-hidden="true">/</span>}<a href={link.href} lang={link.lang} hreflang={link.lang}>{link.label}</a></>))}</div></div>
+        </article>
+
+        <article class="home-choice home-career" data-accent="teal">
+          <a class="home-choice-main" href="/career/" lang="zh-CN" aria-label={t(career.ariaLabel, lang)}>
+            <div class="home-choice-top"><span class="eyebrow">{t(career.kicker, lang)}</span><span class="home-choice-index mono" aria-hidden="true">02</span></div>
+            <h2 class="home-choice-title">{t(career.title, lang)}<span class="home-choice-arrow"><Icon name="arrow-right" /></span></h2>
+            <p class="home-choice-text">{t(career.text, lang)}</p>
+            <ul class="tag-row">{career.tags[lang].map((tag) => <li class="tag">{tag}</li>)}</ul>
+            <span class="link-arrow home-choice-cta">{t(career.cta, lang)}<Icon name="arrow-right" /></span>
+          </a>
+          <div class="home-choice-bottom"><span>{t(career.footNote, lang)}</span><div>{career.links.map((link, i) => (<>{i > 0 && <span aria-hidden="true">/</span>}<a href={link.href} hreflang="zh-CN">{t(link.label, lang)}</a></>))}</div></div>
+        </article>
+      </nav>
+
+      <div class="wrap">
+        <dl class="metrics hero-in" style="--d:380ms">
+          {home.glance.map((m) => (
+            <div class="metric">
+              <dd class="metric-value">{m.value}</dd>
+              <dt class="metric-label">{t(m.label, lang)}</dt>
+              <dd class="metric-note">{t(m.note, lang)}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+    </section>
+
+    <section class="wrap home-contact hero-in" style="--d:440ms" aria-label={t(home.contact.label, lang)}>
+      <span class="eyebrow">{t(home.contact.label, lang)}</span>
+      <div class="home-contact-links">
+        <a class="btn btn-ghost" href={`mailto:${home.contact.email}`}><Icon name="mail" />{t(home.contact.emailLabel, lang)} · {home.contact.email}</a>
+        <a class="btn btn-ghost" href={`mailto:${home.contact.academicEmail}`}><Icon name="mail" />{t(home.contact.academicEmailLabel, lang)} · {home.contact.academicEmail}</a>
+        <a class="icon-btn" href={links.github} target="_blank" rel="noopener noreferrer" title="GitHub" aria-label="GitHub"><Icon name="github" /></a>
+        <a class="icon-btn" href={links.scholar} target="_blank" rel="noopener noreferrer" title="Google Scholar" aria-label="Google Scholar"><Icon name="scholar" /></a>
+        <a class="icon-btn" href={links.orcid} target="_blank" rel="noopener noreferrer" title="ORCID" aria-label="ORCID"><Icon name="orcid" /></a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap footer-inner">
+      <div>
+        <p>{t(home.footer.built, lang)}</p>
+        <p style="margin-top:.35rem">© {year} {t(home.name, lang)}. {t(home.footer.rights, lang)}</p>
+        {site.icp && <p class="footer-icp" style="margin-top:.35rem"><a class="footer-link" href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">{site.icp}</a></p>}
+      </div>
+      <div class="footer-links">
+        <a class="footer-link" href="/academic/">{lang === 'en' ? 'Academic' : '学术主页'}</a>
+        <a class="footer-link" href="/career/">{lang === 'en' ? 'Career · 中文' : '求职主页'}</a>
+        <a class="footer-link" href={altPath} hreflang={site.locales[alt]}>{alt === 'en' ? 'English' : '中文'}</a>
+        <span class="footer-motto">{t(home.footer.motto, lang)}</span>
+      </div>
+    </div>
+  </footer>
+
+  <style is:global>
+    #theme-toggle .icon-moon { display: none; }
+    :root[data-theme='light'] #theme-toggle .icon-sun { display: none; }
+    :root[data-theme='light'] #theme-toggle .icon-moon { display: block; }
+  </style>
+  <script>
+    import '../scripts/shell';
+    import '../scripts/home-wave';
+  </script>
+</body>
+</html>

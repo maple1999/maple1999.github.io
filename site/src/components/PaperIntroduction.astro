@@ -1,0 +1,18 @@
+---
+import { paper } from '../data/academic-paper';
+import { t, type Lang } from '../lib/i18n';
+import Icon from './Icon.astro';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const intro = paper.intro;
+---
+<section class="paper-chapter" id="introduction" aria-labelledby="intro-title">
+  <header class="paper-section-head"><span class="eyebrow">02 / Introduction{lang === 'zh' && ' · 引言'}</span><h2 id="intro-title">{t(intro.title, lang)}</h2><p>{t(intro.text, lang)}</p></header>
+  <div class="paper-trajectory">
+    {intro.steps.map(step => <a href={step.link} class="trajectory-step">
+      <h3>{t(step.title, lang)}</h3><p>{t(step.text, lang)}</p><span class="trajectory-note">{t(step.note, lang)}<Icon name="arrow-right" /></span>
+    </a>)}
+  </div>
+  <p class="paper-thesis" set:html={t(intro.question, lang)} />
+  <p class="paper-narrative">{t(intro.motivation, lang)}</p>
+</section>

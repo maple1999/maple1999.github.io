@@ -1,0 +1,23 @@
+# 项目开发约定
+
+- 用户于 2026-09-10 确认 `www.mapletech.top` 已通过 ICP 备案。
+- 后续网站开发与部署以 SSH 别名 `TXyun` 和 `https://www.mapletech.top` 为目标，不再更新 GitHub Pages 主页。
+- TXyun 为多服务共用服务器。本站静态目录是 `/var/www/mapletech`，nginx 站点配置是 `/etc/nginx/sites-available/mapletech`。操作只限本站；其他应用、容器、端口、代理服务及其配置不得修改或重启。
+- `/playground/`、8080、8787 等属于其他服务。维护本站时保留这些路由、原有 IP 证书和默认虚拟主机。
+- 本站 nginx 调整应先备份并通过 `nginx -t`，然后使用平滑 `reload`；不要停止或重启共享 nginx。
+- SSH 操作使用 `ssh-skill`，服务器别名为 `TXyun`。
+- 旧版 `.github/workflows/pages.yml` 已移除；不要创建或恢复 GitHub Pages 自动发布流程，也不要向 GitHub 推送来发布本站。
+- `site/scripts/deploy.mjs` 只发布 TXyun，固定正式 HTTPS 域名和 `NOINDEX=0`。先构建校验，上传 `/var/www/mapletech.releases/` 中的独立版本，再通过 `release-site.py` 切换本站目录链接；保留上一版以便回滚，不重载 nginx。
+- `/` 是中文入口主页，`/en/` 是英文入口主页，两页共用 `HomePage.astro` 与内容源 `home.ts`，互为 hreflang 翻译；`/academic/` 和 `/academic/zh/` 为英文、中文学术页，共用 `AcademicPage.astro`；`/career/` 为中文求职页，`?role=product` / `?role=vision` 对应产品经理 / 视觉算法工程师。求职内容在 `career.ts` 与 `career-roles.ts`，两份岗位简历分开维护。
+- 入口主页与求职页复用学术页的设计系统 `global.css`（暗色优先、可切浅色、主题存于同一个 localStorage 键 `theme`），但只引入样式，不引入学术页的布局与组件；页面外壳行为在 `scripts/shell.ts`。学术页文件（`AcademicPage.astro`、`Base.astro`、`global.css`、学术组件与 `profile.ts`）不因主页或求职页需求而修改。
+- 学术页与求职页互不链接：学术页没有求职入口，求职页没有学术入口（研究卡片只链到论文 PDF）；两者都只通过顶部姓名标识回到总主页，由总主页做分流。构建校验会检查这一点。
+- 求职页岗位色：产品经理沿用金色，视觉算法工程师为青色，通过注册的 `--role` 颜色属性在 `body.career` 上覆盖 `--gold` 实现，切换时整页平滑过渡；章节顺序由 `career-roles.ts` 的 `order` 决定。每个岗位包含快速档案（`facts`）与岗位匹配对照（`fit`）；视觉算法方向必须保留 Nano-TCC 端侧部署成果（构建校验会检查）。
+- 保留 `/zh/` 的静态跳转页（保留查询参数与锚点）。根路径即使带有旧 `#top`、`#research` 等锚点，也必须显示选择主页，不自动转去学术页。入口主页只与 `/en/` 声明 hreflang 翻译关系，不与学术页声明；不要恢复旧路由作为学术页 canonical。
+- www HTTPS 虚拟主机对 `/` 和 `/index.html` 有独立的首页缓存校验规则（`expires -1`），保留其安全响应头和限流。不要将此规则扩展到其他服务或修改公共 snippet。
+- 2026-11-10 已为 www HTTPS 下 `/academic/`、`/academic/index.html`、`/academic/zh/`、`/academic/zh/index.html` 增加独立精确匹配的 `expires -1`，避免学术页更新后浏览器沿用旧 HTML。保留这些规则及限流、继承的安全响应头；不改变其他服务和静态资源缓存。备份与修复记录见 README。
+- 本次证书修复和续期方式见 README 开头的当前状态，后续历史章节仅作旧部署记录。
+- 2026-09-22 用户授权升级本站 `visit-notify.service`。当前 `/opt/visit-notify/notify.py` 调用 `sessions.py`，读取原 nginx 日志，静默 300 秒后发送会话摘要；SMTP 凭据仍只在服务器 `config.json`。此授权不延伸到其他服务。
+- 访问统计脚本在 `site/src/scripts/visit.js`，由 `scripts/inject-visit.mjs` 仅注入五个正式页面的构建产物，不修改学术布局、组件或数据源；`npm run build` 会自动注入并校验。开发模式不注入，应构建后用 preview 验证。
+- `/_visit` 仅在 www HTTPS 虚拟主机中接收 POST、返回 204 并记入访问日志，无独立公网端口。只统计本站页面及明确列出的 PDF；时长是前台可见估算，附件点击/请求不可表述为确认保存完成。测试用例与维护脚本见 `deploy/visit-notify/`。
+- 2026-11-11 已部署明确机器人标识拦截（`deploy/bot-guard-maps.conf`，同步内嵌于 `deploy/mapletech.conf`）：只在 www HTTPS 的本站路径使用，保留搜索索引、链接预览和其他服务。不要扩大到默认/IP 主机、共享 snippet 或按未知时长/IP 归属封禁真人。汇报不再用 favicon 确认访问；更新机器人规则也要覆盖待发送会话。备份与验证见 README。
+- 学术页当前采用 About / Research Highlights / Publications / Research Interests / Background / Contact，主内容源为 `academic.ts`、`profile.ts`，样式为 `academic.css`；旧论文式组件不再用于正式页。代表项目与主要结果直接展示，背景默认折叠。禁止恢复公开推荐信 PDF、原文摘录及在审作品与投稿会议的身份关联；四份 CV 本次由用户自行处理，收到新版再替换。`.private/` 不得发布。

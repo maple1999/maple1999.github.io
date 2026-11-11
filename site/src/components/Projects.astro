@@ -16,7 +16,7 @@ const s = ui.sections.projects;
 
     <div class="project-list">
       {projects.map((p, i) => (
-        <article class="project reveal" data-accent={p.accent} style={`--reveal-delay:${i * 80}ms`}>
+        <article class="project reveal" id={`project-${p.id}`} data-accent={p.accent} style={`--reveal-delay:${i * 80}ms`}>
           <div class="project-aside">
             <span class="project-kind">{t(p.kind, lang)}</span>
             <h3 class="project-title">{t(p.title, lang)}</h3>

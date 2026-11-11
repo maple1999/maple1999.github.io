@@ -10,6 +10,11 @@ const { lang } = Astro.props;
     <div class="statement-inner reveal">
       <span class="eyebrow">{t(statement.eyebrow, lang)}</span>
       <p class="statement-text" set:html={t(statement.text, lang)} />
+      <p class="statement-note">{t(statement.note, lang)}</p>
     </div>
   </div>
 </section>
+
+<style>
+  .statement-note { margin-top: 1.4rem; color: var(--text-muted); font-size: .93rem; line-height: 1.8; }
+</style>

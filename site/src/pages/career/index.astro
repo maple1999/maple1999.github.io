@@ -1,0 +1,170 @@
+---
+import '../../styles/global.css';
+import '../../styles/career.css';
+import CareerPanel from '../../components/CareerPanel.astro';
+import Icon from '../../components/Icon.astro';
+import { roles } from '../../data/career-roles';
+import { career } from '../../data/career';
+import { site } from '../../data/profile';
+
+const base = Astro.site ?? new URL('https://www.mapletech.top');
+const abs = (p: string) => new URL(p, base).href;
+const canonical = abs('/career/');
+const noindex = process.env.NOINDEX === '1';
+const year = 2026;
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ProfilePage',
+  url: canonical,
+  name: career.title,
+  inLanguage: 'zh-CN',
+  mainEntity: {
+    '@type': 'Person',
+    name: career.name,
+    alternateName: 'Shizhao Gao',
+    description: career.description,
+    email: `mailto:${career.email}`,
+    url: canonical,
+    image: abs('/portrait.jpg'),
+    sameAs: [career.github],
+    knowsAbout: ['AI 产品设计', 'B 端产品', '视频理解', '多模态模型', '端侧部署', 'LLM Agent', '产品交付'],
+  },
+};
+---
+<!doctype html>
+<html lang="zh-CN" data-lang="zh" data-role="product">
+<head>
+  <meta charset="utf-8" />
+  <!-- 岗位与主题在首次绘制前确定：岗位来自 ?role=，主题与学术页共用同一个 localStorage 键 -->
+  <script is:inline>
+    (function () {
+      var d = document.documentElement;
+      d.dataset.role = new URLSearchParams(location.search).get('role') === 'vision' ? 'vision' : 'product';
+      try { d.dataset.theme = localStorage.getItem('theme') || 'dark'; } catch (e) { d.dataset.theme = 'dark'; }
+    })();
+  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{career.title}</title>
+  <meta name="description" content={career.description} />
+  <meta name="author" content={career.name} />
+  <meta name="theme-color" content="#0a0c10" media="(prefers-color-scheme: dark)" />
+  <meta name="theme-color" content="#fbfaf7" media="(prefers-color-scheme: light)" />
+  <link rel="canonical" href={canonical} />
+  {noindex && <meta name="robots" content="noindex, nofollow" />}
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="/favicon.svg" />
+  <link rel="preload" href="/fonts/InstrumentSerif-Regular.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/fonts/Inter-Variable.woff2" as="font" type="font/woff2" crossorigin />
+  <meta property="og:type" content="profile" />
+  <meta property="og:site_name" content="Shizhao Gao" />
+  <meta property="og:locale" content="zh_CN" />
+  <meta property="og:title" content={career.title} />
+  <meta property="og:description" content={career.description} />
+  <meta property="og:url" content={canonical} />
+  <meta property="og:image" content={abs('/portrait.jpg')} />
+  <meta property="og:image:width" content="600" />
+  <meta property="og:image:height" content="600" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content={career.title} />
+  <meta name="twitter:description" content={career.description} />
+  <meta name="twitter:image" content={abs('/portrait.jpg')} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+</head>
+<body class="career">
+  <a class="skip-link" href="#main">跳到主要内容</a>
+
+  <header class="nav" id="nav" data-scrolled="false">
+    <div class="nav-inner">
+      <a class="brand career-brand" href="/" aria-label="高世钊 · 返回主页">
+        <svg class="brand-mark" viewBox="0 0 64 64" aria-hidden="true">
+          <path d="M6 32c3-11 6-11 9 0s6 11 10 0 7.5-13 12.5 0 8.5 11 12.5 2" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="brand-text">高世钊</span>
+      </a>
+
+      <nav class="nav-links" aria-label="页面导航">
+        {career.nav.map((item) => <a class="nav-link" data-section={item.id} href={`#product-${item.id}`}>{item.label}</a>)}
+      </nav>
+
+      <div class="nav-tools">
+        <a class="icon-btn lang-btn career-header-cv" data-resume href={career.resume} download aria-label="下载产品经理简历"><Icon name="download" />简历</a>
+        <button class="icon-btn" id="theme-toggle" type="button" title="切换主题" aria-label="切换主题">
+          <Icon name="sun" class="icon-sun" />
+          <Icon name="moon" class="icon-moon" />
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="career-intro">
+      <div class="wrap">
+        <p class="hero-status hero-in"><span class="status-dot" aria-hidden="true"></span>求职主页 · 中文 · {career.graduation}</p>
+        <h1 class="career-name hero-in" style="--d:60ms">高世钊<span class="career-name-tagline">技术的深度，产品的视角。</span></h1>
+        <p class="lede hero-in" style="--d:120ms">两个岗位方向，同一段背景，侧重点不同。选择你在招的方向，下面的经历、项目、匹配对照与简历会一起切换。</p>
+      </div>
+    </section>
+
+    <div class="career-switch-sentinel" aria-hidden="true"></div>
+    <div class="career-switch hero-in" id="career-switch" data-compact="false" style="--d:180ms">
+      <div class="career-switch-bar">
+        <div class="wrap career-switch-inner">
+          <div class="career-role-tabs" role="tablist" aria-label="目标岗位" aria-orientation="horizontal">
+            <span class="career-role-indicator" aria-hidden="true"></span>
+            {roles.map((role, index) => (
+              <button type="button" role="tab" id={`tab-${role.id}`} aria-controls={`panel-${role.id}`} aria-selected={index === 0 ? 'true' : 'false'} tabindex={index === 0 ? 0 : -1} data-role-tab={role.id}>
+                <span class="career-tab-head"><strong>{role.short}</strong><span class="mono">{role.specialty}</span></span>
+                <span class="career-tab-extra"><span class="career-tab-extra-inner">
+                  <span class="career-tab-pitch">{role.pitch}</span>
+                  <span class="career-tab-stats">{role.highlights.map((item) => <span><b>{item.v}</b>{item.k}</span>)}</span>
+                </span></span>
+              </button>
+            ))}
+          </div>
+          <a class="btn btn-primary career-switch-cv" data-resume href={career.resume} download aria-label="下载产品经理简历"><Icon name="download" />简历</a>
+        </div>
+      </div>
+    </div>
+
+    <div id="career-content">
+      {roles.map((role) => (
+        <div class="career-panel" id={`panel-${role.id}`} role="tabpanel" aria-labelledby={`tab-${role.id}`} tabindex="0" data-role-panel={role.id} data-resume-url={role.resume}>
+          <CareerPanel role={role} />
+        </div>
+      ))}
+    </div>
+
+    <p class="career-sr-only" id="career-announcement" role="status" aria-live="polite"></p>
+    <noscript>
+      <div class="wrap career-noscript">当前展示两份岗位介绍，可分别下载对应简历。启用 JavaScript 后可使用动态岗位切换。</div>
+      <style>.career-switch{display:none!important}#career-content [data-role-panel]{display:block!important}</style>
+    </noscript>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap footer-inner">
+      <div>
+        <p>由高世钊设计并开发，nginx 自托管。</p>
+        <p style="margin-top:.35rem">© {year} 高世钊. 保留所有权利。</p>
+        {site.icp && <p class="footer-icp" style="margin-top:.35rem"><a class="footer-link" href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">{site.icp}</a></p>}
+      </div>
+      <div class="footer-links">
+        <a class="footer-link" href="/">返回主页</a>
+        <a class="footer-link" href={`mailto:${career.email}`}>发送邮件</a>
+        <a class="footer-link" href={career.github} target="_blank" rel="noopener noreferrer">GitHub</a>
+        <a class="footer-link" href="#main">回到顶部 ↑</a>
+      </div>
+    </div>
+  </footer>
+
+  <style is:global>
+    #theme-toggle .icon-moon { display: none; }
+    :root[data-theme='light'] #theme-toggle .icon-sun { display: none; }
+    :root[data-theme='light'] #theme-toggle .icon-moon { display: block; }
+  </style>
+  <script>
+    import '../../scripts/shell';
+    import '../../scripts/career-switch';
+  </script>
+</body>
+</html>

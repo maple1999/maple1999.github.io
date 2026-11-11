@@ -1,0 +1,45 @@
+---
+import { highlights } from '../data/academic';
+import Icon from './Icon.astro';
+import VlmDemo from './VlmDemo.astro';
+import { t, type Lang } from '../lib/i18n';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const en = lang === 'en';
+---
+<section class="academic-section" id="highlights" aria-labelledby="highlights-title">
+  <span id="experiments" class="anchor-alias" aria-hidden="true"></span>
+  <span id="projects" class="anchor-alias" aria-hidden="true"></span>
+  <header class="academic-heading"><p class="eyebrow">{en ? 'Research highlights' : '代表研究'}</p><h2 id="highlights-title">{en ? 'Questions, methods, evidence.' : '问题、方法与证据。'}</h2></header>
+  <div class="highlight-list">
+    {highlights.map((project) => <article class="research-highlight" id={`project-${project.id}`}>
+      <div class="highlight-copy">
+        <p class="highlight-status">{t(project.status, lang)}</p>
+        <h3>{t(project.title, lang)}</h3>
+        <p class="highlight-subtitle">{t(project.subtitle, lang)}</p>
+        <p class="highlight-question">{t(project.question, lang)}</p>
+        <p class="highlight-approach">{t(project.approach, lang)}</p>
+        {project.perspective?.map(paragraph => <p class="highlight-approach">{t(paragraph, lang)}</p>)}
+        <div class="highlight-metrics">{project.metrics.map(metric => <div><strong>{metric.value}</strong><span>{t(metric, lang)}</span></div>)}</div>
+        <p class="highlight-comparison">{t(project.comparison, lang)}</p>
+        <div class="highlight-links">
+          {project.resources.map(resource => <a class="academic-link" href={resource.href} target="_blank" rel="noopener noreferrer">{t(resource, lang)}<Icon name="external" /></a>)}
+        </div>
+      </div>
+      <div class="highlight-media">
+        {project.visual === 'evidence' && <VlmDemo mode="query" lang={lang} />}
+        {project.visual === 'temporal' && <figure class="paper-figure">
+          <a href="/research/temporal-embedding.png" target="_blank" rel="noopener noreferrer" aria-label={en ? 'Enlarge the original embedding figure' : '放大表征可视化原图'}><img src="/research/temporal-embedding.png" width="964" height="468" loading="lazy" alt={en ? 'Original paper figure: action frames at similar phases align in a cyclic embedding space.' : '论文原图：相似动作阶段的帧在周期表征空间中对齐。'} /></a>
+          <figcaption>{en ? 'Same action phase, nearby representations. Figure 5 from my CVPR paper; click to enlarge.' : '相同动作阶段，对应相近表征。CVPR 论文图 5，点击可放大。'}</figcaption>
+        </figure>}
+        {project.visual === 'routing' && <VlmDemo mode="routing" lang={lang} />}
+        <p class="highlight-context">{t(project.context, lang)}</p>
+      </div>
+      <details class="project-details">
+        <summary>{en ? 'Research details' : '研究详情'}<span aria-hidden="true">+</span></summary>
+        <p>{t(project.detail, lang)}</p>
+        {project.visual === 'temporal' && <a href="/research/period-adaptive-framework.png" target="_blank" rel="noopener noreferrer"><img class="framework-image" src="/research/period-adaptive-framework.png" width="1341" height="810" loading="lazy" alt={en ? 'Original Figure 2: self-supervised training and multi-expert consensus inference.' : '论文图 2：自监督训练与多专家共识推理框架。'} /></a>}
+      </details>
+    </article>)}
+  </div>
+</section>

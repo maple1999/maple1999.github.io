@@ -1,0 +1,26 @@
+---
+import { Image } from 'astro:assets';
+import portrait from '../assets/portrait.jpg';
+import Icon from './Icon.astro';
+import { identity, links } from '../data/profile';
+import { paper } from '../data/academic-paper';
+import { t, type Lang } from '../lib/i18n';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+---
+<section class="paper-abstract paper-chapter" id="top" aria-labelledby="paper-title">
+  <p class="paper-kicker">{t(paper.application, lang)}</p>
+  <h1 id="paper-title">{t(identity.name, lang)}</h1>
+  <p class="paper-focus">{lang === 'en' ? 'Video-language models · Multimodal reasoning' : '视频语言模型 · 多模态推理'}</p>
+  <div class="paper-byline">
+    <Image src={portrait} alt={t(identity.name, lang)} width={56} height={56} format="webp" />
+    <div><p>{t(paper.affiliation, lang)}</p><p>{t(paper.joint, lang)}</p></div>
+  </div>
+  <div class="abstract-copy"><p>{t(paper.abstract, lang)}</p></div>
+  <div class="paper-evidence">{paper.evidence.map(item => <a href={item.href}><strong>{item.value}</strong><span>{t(item.label, lang)}</span></a>)}</div>
+  <div class="paper-actions">
+    <a class="btn btn-primary" href={links.cv[lang]} download>{lang === 'en' ? 'Academic CV' : '学术简历'}<Icon name="download" /></a>
+    <a class="paper-text-link" href="#experiments">{t(paper.explore, lang)}<Icon name="arrow-right" /></a>
+    <a class="paper-text-link" href={`mailto:${links.email}`}>{lang === 'en' ? 'Email me' : '邮件联系'}<Icon name="mail" /></a>
+  </div>
+</section>

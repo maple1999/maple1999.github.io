@@ -5,7 +5,7 @@ import type { APIRoute } from 'astro';
  * 避免与主站构成重复内容。
  */
 export const GET: APIRoute = ({ site }) => {
-  const base = site ?? new URL('https://maple1999.github.io');
+  const base = site ?? new URL('https://www.mapletech.top');
   const noindex = process.env.NOINDEX === '1';
 
   const body = noindex

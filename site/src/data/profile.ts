@@ -2,10 +2,10 @@
  * ============================================================================
  *  单一内容源 / Single source of content
  * ----------------------------------------------------------------------------
- *  全站中英文内容都在这个文件里。以后新增论文、项目、经历，只改这里即可，
+ *  学术页中英文内容在这个文件里。以后新增论文、项目、经历，只改这里即可，
  *  不需要动任何组件。改完运行 `npm run build && npm run deploy`。
  *
- *  All bilingual site content lives here. To add a publication / project /
+ *  Bilingual academic content lives here. To add a publication / project /
  *  role, edit this file only — no component changes needed.
  * ============================================================================
  */
@@ -20,17 +20,17 @@ export const site = {
   /** 用于 <html lang>、hreflang、OG locale */
   locales: { en: 'en', zh: 'zh-CN' },
   /**
-   * ICP 备案号。备案通过后把号码填进来，页脚会自动显示并链接到工信部查询系统。
-   * 留空则不显示。例如：'闽ICP备2026000000号-1'
+   * ICP 备案号。页脚自动显示并链接到工信部查询系统；留空则不显示。
+   * 2026-09-11 取得：豫ICP备2026043356号-1
    */
-  icp: '',
+  icp: '豫ICP备2026043356号-1',
   title: {
-    en: 'Shizhao Gao — Video Understanding & Efficient Multimodal Inference',
-    zh: '高世钊 — 视频理解与高效多模态推理',
+    en: 'Shizhao Gao — Multimodal Representation Learning & Reasoning',
+    zh: '高世钊 — 多模态表征学习与推理',
   } satisfies L,
   description: {
-    en: 'CVPR 2026 Findings first author and CVPR Compute Gold Star recipient. M.Eng. researcher in self-supervised temporal modeling, human-centric action analysis, and efficient video-language model inference — with four years of product and systems engineering behind it.',
-    zh: 'CVPR 2026 Findings 独立一作，CVPR Compute Gold Star 获得者。研究自监督时序建模、人体动作分析与视频语言模型高效推理，并有四年产品与系统工程实践。',
+    en: 'M.Eng. candidate interested in multimodal representation learning and reasoning, building on temporal modeling and efficient video-language understanding. CVPR 2026 Findings first author and CVPR Compute Gold Star recipient.',
+    zh: '人工智能硕士研究生，关注多模态表征学习与推理，研究基础涵盖时序建模与高效视频语言理解。CVPR 2026 Findings 独立一作，获 CVPR Compute Gold Star。',
   } satisfies L,
 };
 
@@ -40,17 +40,17 @@ export const identity = {
   name: { en: 'Shizhao Gao', zh: '高世钊' } satisfies L,
   /** 名字下方那一行 */
   tagline: {
-    en: 'I study what video-language models actually need to <em>see</em> — and how to make them pay for only that.',
-    zh: '我研究视频语言模型究竟需要<em>看见</em>多少——以及怎样让它只在必要处花算力。',
+    en: 'How do multimodal models turn information into <em>understanding</em>?',
+    zh: '多模态模型如何把信息转化为<em>理解</em>？',
   } satisfies L,
   intro: {
-    en: "M.Eng. candidate in Artificial Intelligence, jointly trained at the Quanzhou Institute of Equipment Manufacturing, Chinese Academy of Sciences. My research asks how far video understanding can go <strong>without labels</strong> and <strong>without waste</strong>: self-supervised temporal modeling that learns repetition structure on its own, and inference strategies that spend compute only where a model actually needs it. Right now I'm most interested in adaptive visual-token allocation, efficient multimodal reasoning, and whether efficiency gains actually <em>transfer</em> across video-language architectures under realistic compute budgets. Before returning to research I spent nearly two years as a product engineer shipping server platforms at enterprise scale — that engineering instinct still shapes how I build: reproducible pipelines, measured cost, honest negative results.",
-    zh: '人工智能专业硕士研究生，中国科学院海西研究院泉州装备制造研究所联合培养。我的研究关心视频理解能在<strong>没有标注</strong>、<strong>没有浪费</strong>的前提下走多远：让模型自己学会重复结构的自监督时序建模，以及只在真正需要时才花算力的推理策略。目前最感兴趣的方向是自适应视觉 Token 分配、高效多模态推理，以及在真实算力预算下，效率收益究竟能否<em>迁移</em>到不同的视频语言模型架构上。读研之前，我做了近两年产品工程师，交付过企业级服务器平台——那段工程训练至今影响我做研究的方式：可复现的流程、算得清的成本、如实报告的负面结果。',
+    en: 'M.Eng. candidate in Artificial Intelligence at Fujian Agriculture and Forestry University, jointly trained at the Quanzhou Institute of Equipment Manufacturing, Haixi Institute, Chinese Academy of Sciences, with expected graduation in June 2027. My background is in <strong>temporal representation learning and efficient video-language understanding</strong>: self-supervised repetitive action counting, test-time computation, and visual evidence selection. These experiences motivate my broader interest in how multimodal models represent, integrate, and reason over information. During my Ph.D., I hope to deepen my understanding of learning, model design, and reasoning, developing methods whose benefits extend across architectures and contexts.',
+    zh: '福建农林大学人工智能专业硕士研究生，中国科学院海西研究院泉州装备制造研究所联合培养，预计 2027 年 6 月毕业。研究基础是<strong>时序表征学习与高效视频语言理解</strong>，包括自监督重复动作计数、测试时计算和视觉证据选择。这些经历让我进一步关注多模态模型如何表征、整合并利用信息进行推理。博士阶段，我希望深入研究学习机制、模型设计与推理，探索能够跨架构、跨情境迁移的方法。',
   } satisfies L,
   /** 头部身份标签 */
   chips: [
     { en: 'CVPR 2026 Findings · First Author', zh: 'CVPR 2026 Findings · 独立一作' },
-    { en: 'CVPR Compute Gold Star · Top 5%', zh: 'CVPR Compute Gold Star · 前 5%' },
+    { en: 'CVPR Compute Gold Star', zh: 'CVPR Compute Gold Star' },
     { en: 'Chinese Academy of Sciences', zh: '中国科学院联合培养' },
   ] satisfies L[],
   location: { en: 'Quanzhou / Fuzhou, China', zh: '中国 · 泉州 / 福州' } satisfies L,
@@ -79,9 +79,9 @@ export const links = {
 
 export const metrics = [
   {
-    value: '8',
-    label: { en: 'Papers', zh: '篇论文' } satisfies L,
-    note: { en: '4 as first author', zh: '其中 4 篇独立一作' } satisfies L,
+    value: '2',
+    label: { en: 'Published / accepted', zh: '篇已发表 / 录用' } satisfies L,
+    note: { en: '5 more under review', zh: '另有 5 篇在审' } satisfies L,
   },
   {
     value: '0.129',
@@ -89,54 +89,98 @@ export const metrics = [
     note: { en: 'Label-free SOTA, beats supervised', zh: '无标注 SOTA，超过监督基线' } satisfies L,
   },
   {
-    value: '18.0%',
-    label: { en: 'FLOPs saved', zh: 'FLOPs 节省' } satisfies L,
-    note: { en: 'VideoLLM routing, near-baseline accuracy', zh: 'VideoLLM 路由，准确率接近基线' } satisfies L,
+    value: '+3.15',
+    label: { en: 'Accuracy gain (pp)', zh: '准确率提升（百分点）' } satisfies L,
+    note: { en: 'vs. uniform sampling, similar token cost', zh: '相比均匀采样，输入 Token 成本接近' } satisfies L,
   },
   {
-    value: '100+',
-    label: { en: 'Engineering projects', zh: '个工程项目' } satisfies L,
-    note: { en: 'Server platforms delivered, ¥30M orders', zh: '服务器平台交付，3000 万订单' } satisfies L,
+    value: '9,015',
+    label: { en: 'Video QA questions', zh: '个视频问答问题' } satisfies L,
+    note: { en: 'Evaluated across 5 video datasets', zh: '覆盖 5 个视频数据集' } satisfies L,
   },
 ];
 
 /* -------------------------------------------------------------- 研究方向 */
 
-export const researchAreas = [
-  {
-    id: 'counting',
-    index: '01',
-    title: { en: 'Repetitive Action Counting', zh: '重复动作计数' } satisfies L,
-    summary: {
-      en: 'Teaching models to count repetitions with no count labels at all. Real motion speeds up and slows down mid-video, which quietly breaks the fixed-period assumption almost every prior method rests on. I model period adaptively across multiple temporal scales, so the structure of repetition is learned rather than assumed.',
-      zh: '让模型在完全没有计数标注的情况下学会数重复。真实动作会在视频中途忽快忽慢，而几乎所有既有方法都默认周期固定——这个假设一旦失效，计数就崩了。我在多个时间尺度上自适应地建模周期，让重复结构被学出来，而不是被假设出来。',
-    } satisfies L,
-    keywords: ['Self-supervised learning', 'Temporal cycle consistency', 'Multi-scale modeling', 'Period adaptation'],
-    keywordsZh: ['自监督学习', '时序循环一致性', '多尺度建模', '周期自适应'],
+/** Editorial adaptation of Statement of Research Interests.md, not a claim of completed work. */
+export const researchInterests = {
+  introduction: {
+    en: 'My long-term interest is multimodal representation learning and reasoning: how models organize information, acquire useful structure, and use it reliably across changing contexts.',
+    zh: '我的长期兴趣是多模态表征学习与推理：模型如何组织信息、习得有用的结构，并在变化的情境中可靠地运用它们。',
+  } satisfies L,
+  question: {
+    en: 'Beyond what a model sees, what determines <em>what it understands</em>?',
+    zh: '除了让模型看见什么，还有什么决定了<em>它能理解什么</em>？',
+  } satisfies L,
+  status: { en: 'Questions for my Ph.D.', zh: '博士阶段希望探索的问题' } satisfies L,
+  diagramLabel: { en: 'Representations, learning and computation shape reasoning together.', zh: '表征、学习与计算，共同塑造推理能力。' } satisfies L,
+  reasoning: { en: 'Reasoning', zh: '推理' } satisfies L,
+  connection: { en: 'Three connected directions', zh: '三个相互关联的方向' } satisfies L,
+  explore: { en: 'Explore a question', zh: '展开一个研究问题' } satisfies L,
+  inquiryLabel: { en: 'What I want to understand', zh: '我想理解' } satisfies L,
+  approachLabel: { en: 'How I hope to investigate', zh: '我希望如何探索' } satisfies L,
+  directions: [
+    {
+      id: 'representation', number: '01', accent: 'gold',
+      label: { en: 'Representation', zh: '表征' } satisfies L,
+      tabLabel: { en: 'Represent', zh: '表征' } satisfies L,
+      title: { en: 'What information survives?', zh: '什么信息被保留下来？' } satisfies L,
+      summary: { en: 'Reasoning depends on relationships, temporal dependencies, and change. I want to understand how visual and linguistic representations preserve and organize this structure.', zh: '推理依赖关系、时序依赖与变化。我想理解视觉和语言表征如何保留并组织这些结构。' } satisfies L,
+      inquiry: { en: 'What is retained or lost as inputs are processed, and how do visual and linguistic information interact?', zh: '输入经过处理后，什么被保留、什么被丢失？视觉与语言信息又如何在内部表征中交互？' } satisfies L,
+      approach: { en: 'Investigate structured or adaptive representations, starting with temporal relationships and changes in video. I would compare what different representations retain and how interventions affect reasoning, then examine whether those benefits transfer across tasks and models.', zh: '从视频中的时序关系与变化入手，探索结构化或自适应表征。我希望比较不同表征保留了哪些信息、对其进行干预后推理行为如何变化，再考察收益能否跨任务与模型迁移。' } satisfies L,
+      keywords: [{ en: 'Temporal structure', zh: '时序结构' }, { en: 'Cross-modal interaction', zh: '跨模态交互' }, { en: 'Information retention', zh: '信息保留' }] satisfies L[],
+    },
+    {
+      id: 'learning', number: '02', accent: 'teal',
+      label: { en: 'Learning', zh: '学习' } satisfies L,
+      tabLabel: { en: 'Learn', zh: '学习' } satisfies L,
+      title: { en: 'How is useful structure learned?', zh: '有用的结构如何被学到？' } satisfies L,
+      summary: { en: 'Representation quality is shaped by learning. I hope to study how architectures, training objectives, and learning mechanisms influence what models acquire and how they use it.', zh: '表征质量由学习过程塑造。我希望研究架构、训练目标与学习机制如何影响模型获取什么，以及如何运用它。' } satisfies L,
+      inquiry: { en: 'Can models learn relationships and transformations that language does not explicitly describe, and transfer them to unfamiliar tasks?', zh: '模型能否学到语言没有明确描述的关系与变换，并将这些能力迁移到陌生任务？' } satisfies L,
+      approach: { en: 'Explore predictive and self-supervised objectives that encourage models to capture relationships and transformations beyond explicit language descriptions. I would connect these objectives with model design and study how the resulting representations support cross-modal integration and unfamiliar tasks.', zh: '探索预测式与自监督目标，让模型捕捉显式语言描述之外的关系与变换。我希望将这些目标与模型设计结合，研究形成的表征如何支持跨模态整合，以及如何应对陌生任务。' } satisfies L,
+      keywords: [{ en: 'Self-supervision', zh: '自监督学习' }, { en: 'Predictive objectives', zh: '预测式目标' }, { en: 'Model design', zh: '模型设计' }] satisfies L[],
+    },
+    {
+      id: 'computation', number: '03', accent: 'violet',
+      label: { en: 'Computation', zh: '计算' } satisfies L,
+      tabLabel: { en: 'Compute', zh: '计算' } satisfies L,
+      title: { en: 'When is more computation useful?', zh: '何时值得投入更多计算？' } satisfies L,
+      summary: { en: 'More available information does not always mean more useful evidence. I want to understand when further processing improves reasoning, and how to allocate a limited budget.', zh: '可用信息更多，不一定意味着有效证据更多。我想理解何时进一步处理能够改善推理，以及有限预算应如何分配。' } satisfies L,
+      inquiry: { en: 'Can better representations reduce the need for additional inference? Can adaptive computation compensate for what a model has not learned?', zh: '更好的表征能否减少额外推理的需求？自适应计算能否弥补模型尚未学到的能力？' } satisfies L,
+      approach: { en: 'Study evidence selection and adaptive computation together, building on my frame-sufficiency and routing work. I would compare when extra processing helps across models and investigate whether stronger representations reduce the need for additional inference or change where it is most useful.', zh: '以帧充分性与路由工作为基础，将证据选择和自适应计算结合起来。我希望跨模型比较额外处理何时有效，并研究更强的表征能否减少额外推理需求，或改变计算最有价值的位置。' } satisfies L,
+      keywords: [{ en: 'Test-time computation', zh: '测试时计算' }, { en: 'Evidence selection', zh: '证据选择' }, { en: 'Learning × inference', zh: '学习 × 推理' }] satisfies L[],
+    },
+  ],
+  evidenceLabel: { en: 'Where these questions began', zh: '这些问题从何而来' } satisfies L,
+  evidence: [
+    {
+      number: '01', accent: 'gold', marker: 'CVPR 2026 Findings',
+      title: { en: 'Learning temporal structure', zh: '从时序中学习结构' } satisfies L,
+      text: { en: 'Self-supervised counting taught me to look for structure that can be learned without explicit labels.', zh: '自监督动作计数让我关注：没有显式标注时，模型仍能学到怎样的结构。' } satisfies L,
+      href: '#project-period-adaptive',
+      link: { en: 'Count What Repeats', zh: '周期自适应动作计数' } satisfies L,
+    },
+    {
+      number: '02', accent: 'teal', marker: { en: '+3.15 pp · comparable token cost', zh: '+3.15 个百分点 · Token 成本接近' } satisfies L,
+      title: { en: 'Making computation count', zh: '让计算转化为收益' } satisfies L,
+      text: { en: 'Across 9,015 questions, better accuracy than uniform sampling motivated questions about how evidence is used.', zh: '在 9,015 个问题上优于均匀采样的结果，让我进一步追问模型如何利用证据。' } satisfies L,
+      href: '#project-test-time-scaling',
+      link: { en: 'Test-time scaling research', zh: '测试时扩展研究' } satisfies L,
+    },
+    {
+      number: '03', accent: 'violet', marker: 'Qwen2.5-VL → LLaVA-Video',
+      title: { en: 'A gain that did not transfer', zh: '一次未能迁移的收益' } satisfies L,
+      text: { en: 'A routing strategy worked on one model but not another. What differs in their representations and computation?', zh: '路由策略在一个模型上有效，却未迁移到另一个。它们的表征与计算机制有何不同？' } satisfies L,
+      href: '#project-frame-sufficiency',
+      link: { en: 'Frame sufficiency & routing', zh: '帧充分性与自适应路由' } satisfies L,
+    },
+  ],
+  method: {
+    title: { en: 'Better results. Clearer explanations.', zh: '改善结果，也解释原因。' } satisfies L,
+    text: { en: 'I want to understand why a method succeeds or fails, using controlled comparisons across architectures, tasks, and compute budgets, and analyses of what internal representations retain.', zh: '我希望通过跨架构、跨任务与跨计算预算的受控比较，结合内部表征分析，理解一种方法为何有效、又为何失效。' } satisfies L,
+    axes: [{ en: 'Across architectures', zh: '跨架构' }, { en: 'Across tasks', zh: '跨任务' }, { en: 'Across budgets', zh: '跨预算' }] satisfies L[],
   },
-  {
-    id: 'skeleton',
-    index: '02',
-    title: { en: 'Skeleton-Based Action Understanding', zh: '骨架动作理解' } satisfies L,
-    summary: {
-      en: 'Skeleton representations inherit whatever the camera happened to be doing. I use gravity as a stable external reference to decouple viewpoint from motion semantics, and model anomaly as a <em>relational</em> property — because what makes one person\'s behaviour abnormal is usually the people around them.',
-      zh: '骨架表示会把相机的姿态一并继承下来。我用重力方向作为稳定的外部参考，把视角与动作语义解耦；同时把异常建模为一种<em>关系</em>属性——因为一个人的行为是否异常，往往取决于他周围的人。',
-    } satisfies L,
-    keywords: ['View-robust recognition', 'Gravity-aware decoupling', 'Multi-person anomaly', 'Graph modeling'],
-    keywordsZh: ['视角鲁棒识别', '重力感知解耦', '多人异常检测', '图建模'],
-  },
-  {
-    id: 'videollm',
-    index: '03',
-    title: { en: 'Efficient Video-Language Inference', zh: '视频语言模型高效推理' } satisfies L,
-    summary: {
-      en: 'Most VideoLLM pipelines sample frames densely or on a fixed budget, with no evidence that the frames are <em>sufficient</em>. I measure minimum sufficient frame sets directly, then route uncertain examples to larger budgets — spending compute where the model is actually unsure, and reporting plainly where the strategy fails to transfer.',
-      zh: '多数 VideoLLM 采用密集或固定预算的抽帧，却没有任何证据说明这些帧是否<em>足够</em>。我直接度量最小充分帧集，再把不确定的样本路由到更大的帧预算——算力花在模型真正拿不准的地方，同时如实报告这套策略在哪个模型上失效。',
-    } satisfies L,
-    keywords: ['Frame sufficiency', 'Confidence routing', 'Visual token masking', 'FLOP profiling'],
-    keywordsZh: ['帧充分性', '置信度路由', '视觉 Token Masking', 'FLOP 分析'],
-  },
-];
+};
 
 /* --------------------------------------------------------------- 已发表 */
 
@@ -144,6 +188,7 @@ export const publications = [
   {
     year: '2026',
     venue: 'CVPR 2026 Findings',
+    status: { en: 'Published', zh: '已发表' } satisfies L,
     venueFull: { en: 'IEEE/CVF Conference on Computer Vision and Pattern Recognition', zh: 'IEEE/CVF 计算机视觉与模式识别会议' } satisfies L,
     title: 'Count What Repeats: Period-Adaptive Multi-Scale Consistency for Self-Supervised Repetitive Action Counting',
     authors: [
@@ -151,21 +196,43 @@ export const publications = [
       { name: 'Jun Li', me: false },
       { name: 'Qiming Li', me: false, corresponding: true },
     ],
-    role: { en: 'First author · Sole student author', zh: '独立一作 · 唯一学生作者' } satisfies L,
+    role: { en: 'First author', zh: '第一作者' } satisfies L,
     summary: {
       en: 'A self-supervised framework that adapts to changing action periods instead of assuming a fixed one, combining multi-scale cycle consistency with an action-similarity objective and a multi-expert consensus counting stage. Reaches 0.129 MAE / 0.842 OBO on RepCount and 0.098 MAE / 0.879 OBO on Countix — outperforming prior supervised baselines while using no count annotations.',
       zh: '一个自监督框架：不再假设周期固定，而是自适应动作周期变化，将多尺度循环一致性、动作相似性目标与多专家共识计数流程结合。在 RepCount 上取得 0.129 MAE / 0.842 OBO，Countix 上取得 0.098 MAE / 0.879 OBO——在完全不使用计数标注的前提下超过既有监督基线。',
     } satisfies L,
     awards: [
       {
-        en: 'CVPR Compute Gold Star — top 5% across Main Track and Findings, awarded for compute efficiency and reproducibility',
-        zh: 'CVPR Compute Gold Star — 评选涵盖 Main Track 与 Findings，入选比例前 5%，表彰计算效率与可复现性',
+        en: 'CVPR Compute Gold Star · recognition for computational efficiency',
+        zh: 'CVPR Compute Gold Star · 计算效率方面的认可',
       } satisfies L,
       { en: 'Poster presented at CVPR 2026, Denver, CO, USA', zh: '于 CVPR 2026（美国丹佛）展示论文海报' } satisfies L,
     ],
     resources: [
       { label: { en: 'Paper', zh: '论文' } satisfies L, href: 'https://openaccess.thecvf.com/content/CVPR2026F/papers/Gao_Count_What_Repeats_Period-Adaptive_Multi-Scale_Consistency_for_Self-Supervised_Repetitive_Action_CVPRF_2026_paper.pdf' },
     ],
+  },
+  {
+    year: '',
+    venue: 'Pattern Recognition',
+    status: { en: 'Accepted', zh: '已录用' } satisfies L,
+    venueFull: { en: 'Pattern Recognition', zh: 'Pattern Recognition' } satisfies L,
+    title: 'TWCRAC: Leveraging Temporal Cycle Consistency and Dynamic Thresholding for Robust Repetitive Action Counting',
+    authors: [
+      { name: 'Jun Li', me: false },
+      { name: 'Shizhao Gao', me: true },
+      { name: 'Tianwen Hu', me: false },
+      { name: 'Yinhui Xie', me: false },
+      { name: 'Zhouhua Liu', me: false },
+      { name: 'Qiming Li', me: false },
+    ],
+    role: { en: 'Second author', zh: '第二作者' } satisfies L,
+    summary: {
+      en: 'Research on robust repetitive action counting using temporal cycle consistency and dynamic thresholding. Accepted by Pattern Recognition.',
+      zh: '结合时序循环一致性与动态阈值开展鲁棒重复动作计数研究，已被 Pattern Recognition 录用。',
+    } satisfies L,
+    awards: [],
+    resources: [],
   },
 ];
 
@@ -175,64 +242,6 @@ export const publications = [
  *  only — titles are withheld until acceptance.
  * ------------------------------------------------------------------------ */
 
-export const underReview = [
-  {
-    venue: 'IEEE TMC',
-    venueFull: { en: 'IEEE Transactions on Mobile Computing', zh: 'IEEE Transactions on Mobile Computing' } satisfies L,
-    tier: { en: 'CCF-A', zh: 'CCF-A · 中科院二区 Top' } satisfies L,
-    topic: { en: 'Resource-aware on-device repetition sensing for mobile edge devices', zh: '面向移动边缘设备的资源感知端侧重复动作感知' } satisfies L,
-    role: { en: 'First author · Sole student author', zh: '独立一作 · 唯一学生作者' } satisfies L,
-    status: { en: 'Under review', zh: 'Under review' } satisfies L,
-  },
-  {
-    venue: 'IJCV',
-    venueFull: { en: 'International Journal of Computer Vision', zh: 'International Journal of Computer Vision' } satisfies L,
-    tier: { en: 'CCF-A', zh: 'CCF-A' } satisfies L,
-    topic: { en: 'Semantic-guided representation decoupling for self-supervised repetitive counting', zh: '面向自监督重复计数的语义引导表征解耦' } satisfies L,
-    role: { en: 'Student co-author · Sole student author', zh: '学生二作 · 唯一学生作者' } satisfies L,
-    status: { en: 'Under review', zh: 'Under review' } satisfies L,
-  },
-  {
-    venue: 'AAAI 2027',
-    venueFull: { en: 'AAAI Conference on Artificial Intelligence', zh: 'AAAI 人工智能大会' } satisfies L,
-    tier: { en: 'CCF-A', zh: 'CCF-A' } satisfies L,
-    topic: { en: 'View-robust skeleton action recognition', zh: '视角鲁棒的骨架动作识别' } satisfies L,
-    role: { en: 'First author · Sole student author', zh: '独立一作 · 唯一学生作者' } satisfies L,
-    status: { en: 'Under review', zh: '已投稿 · 审稿中' } satisfies L,
-  },
-  {
-    venue: 'AAAI 2027',
-    venueFull: { en: 'AAAI Conference on Artificial Intelligence', zh: 'AAAI 人工智能大会' } satisfies L,
-    tier: { en: 'CCF-A', zh: 'CCF-A' } satisfies L,
-    topic: { en: 'Multi-person skeleton anomaly detection', zh: '多人骨架异常检测' } satisfies L,
-    role: { en: 'First author · Sole student author', zh: '独立一作 · 唯一学生作者' } satisfies L,
-    status: { en: 'Under review', zh: '已投稿 · 审稿中' } satisfies L,
-  },
-  {
-    venue: 'Pattern Recognition',
-    venueFull: { en: 'Pattern Recognition', zh: 'Pattern Recognition' } satisfies L,
-    tier: { en: 'JCR Q1', zh: '中科院一区 Top' } satisfies L,
-    topic: { en: 'Temporal cycle consistency with dynamic thresholding for robust counting', zh: '结合动态阈值的时序循环一致性鲁棒计数' } satisfies L,
-    role: { en: 'Student co-author', zh: '学生二作' } satisfies L,
-    status: { en: 'Revision submitted', zh: '已返修' } satisfies L,
-  },
-  {
-    venue: 'Pattern Recognition',
-    venueFull: { en: 'Pattern Recognition', zh: 'Pattern Recognition' } satisfies L,
-    tier: { en: 'JCR Q1', zh: '中科院一区 Top' } satisfies L,
-    topic: { en: 'Global multi-geometric feature learning for repetitive counting', zh: '面向重复计数的全局多几何特征学习' } satisfies L,
-    role: { en: 'Student co-author', zh: '学生二作' } satisfies L,
-    status: { en: 'Revision submitted', zh: '已返修' } satisfies L,
-  },
-  {
-    venue: 'IEEE TCSVT',
-    venueFull: { en: 'IEEE Transactions on Circuits and Systems for Video Technology', zh: 'IEEE Transactions on Circuits and Systems for Video Technology' } satisfies L,
-    tier: { en: 'JCR Q1', zh: '中科院一区 Top' } satisfies L,
-    topic: { en: 'Flexible graph-based modeling with adaptive node interaction', zh: '自适应节点交互的柔性图建模' } satisfies L,
-    role: { en: 'Student co-author', zh: '学生二作' } satisfies L,
-    status: { en: 'Under review', zh: 'Under review' } satisfies L,
-  },
-];
 
 /* ------------------------------------------------------------ 读博的理由
  *  全站唯一一段不谈成果、只谈动机的文字。放在「关于」之后、「联系」之前。
@@ -241,8 +250,12 @@ export const underReview = [
 export const statement = {
   eyebrow: { en: 'Why a Ph.D.', zh: '为什么读博' } satisfies L,
   text: {
-    en: "I'm not setting out to change the world. I would like to move <em>one field</em> — a little, and in the right direction — and leave behind work that other people can pick up and build on. That is the whole reason I want to do a Ph.D.",
-    zh: '我没想过要改变世界。我希望能推动<em>一个领域</em>——哪怕只有一点，往好的方向——并留下一些别人能接着往下做的工作。这就是我想读博的全部理由。',
+    en: 'I want to build more capable models — and better understand <em>how they learn and use information</em>.',
+    zh: '我希望构建能力更强的模型，也更深入地理解<em>它们如何学习和运用信息</em>。',
+  } satisfies L,
+  note: {
+    en: 'A Ph.D. is the opportunity to connect my experience in video understanding with deeper questions about multimodal learning and reasoning, and leave work that others can build on.',
+    zh: '博士阶段，我希望把视频理解的研究积累与多模态学习、推理中的深层问题联系起来，留下一些别人能接着往下做的工作。',
   } satisfies L,
 };
 
@@ -250,30 +263,28 @@ export const statement = {
 
 export const projects = [
   {
-    id: 'period-adaptive',
-    title: { en: 'Period-Adaptive Self-Supervised Repetitive Action Counting', zh: '周期自适应自监督重复动作计数' } satisfies L,
-    kind: { en: "M.Eng. thesis project · Lead", zh: '硕士学位论文课题 · 主要完成人' } satisfies L,
-    period: { en: 'Sep 2024 — Present', zh: '2024.09 — 至今' } satisfies L,
-    accent: 'gold',
+    id: 'test-time-scaling',
+    title: { en: 'Query-Axis Scaling for Video-Language Models', zh: '视频语言模型的查询轴扩展（Query-Axis Scaling）' } satisfies L,
+    kind: { en: 'First author · Manuscript in preparation', zh: '第一作者 · 稿件准备中' } satisfies L,
+    period: { en: '2026', zh: '2026' } satisfies L,
+    accent: 'teal',
     problem: {
-      en: 'Prior repetitive-counting methods assume a fixed period per video. Real actions accelerate and decelerate mid-sequence, so that assumption fails exactly where counting matters most — and most methods additionally require dense count annotations.',
-      zh: '既有重复计数方法默认单个视频内周期固定。真实动作会在序列中途加速或减速，这个假设恰恰在最需要准确计数的地方失效；同时多数方法还依赖密集的计数标注。',
+      en: 'Can the scope of questions sharing a visual observation become a new dimension of test-time scaling? I investigate how joint observation across questions changes the accuracy–compute trade-off.',
+      zh: '共享视觉观察的问题范围，能否成为测试时扩展的新维度？我研究跨问题的联合观察如何改变准确率与计算成本之间的权衡。',
     } satisfies L,
     approach: {
-      en: 'Period-adaptive multi-scale temporal cycle consistency paired with an action-similarity objective, learning repetition structure from unlabeled skeleton sequences, and a multi-expert consensus stage that turns learned structure into a count.',
-      zh: '周期自适应的多尺度时序循环一致性，配合动作相似性目标，从无标注骨架序列中学习重复结构；再由多专家共识流程把学到的结构转换为计数结果。',
+      en: 'Jointly select evidence for multiple questions about one video, encode the shared visual observation once, and reuse it for question-specific answers. Evaluated on Qwen3-VL-8B across 9,015 questions from five video datasets, with budget analyses, ablations, and transfer evaluation on Qwen2.5-VL-7B.',
+      zh: '联合选择同一视频下多个问题所需的证据，共享视觉观察的编码，并复用于各问题的独立回答。在 Qwen3-VL-8B 上以 5 个视频数据集、9,015 个问题进行评测，开展预算分析、消融与 Qwen2.5-VL-7B 迁移评估。',
     } satisfies L,
     results: [
-      { k: 'RepCount', v: '0.129 MAE · 0.842 OBO' },
-      { k: 'Countix', v: '0.098 MAE · 0.879 OBO' },
+      { k: { en: 'vs. uniform sampling', zh: '相比均匀采样' }, v: { en: '+3.15 pp accuracy · comparable input-token cost', zh: '准确率 +3.15 个百分点 · 输入 Token 成本接近' } },
+      { k: { en: 'vs. query-adaptive keyframes', zh: '相比查询自适应关键帧基线' }, v: { en: '+2.11 pp accuracy · 72.23% fewer input tokens', zh: '准确率 +2.11 个百分点 · 输入 Token 减少 72.23%' } },
     ],
     outcome: {
-      en: 'Published at CVPR 2026 Findings and awarded a CVPR Compute Gold Star. I led problem formulation, method design, the full PyTorch implementation, all experiments and ablations, and the manuscript.',
-      zh: '成果发表于 CVPR 2026 Findings，并获 CVPR Compute Gold Star。我主导了问题定义、方法设计、完整 PyTorch 实现、全部实验与消融分析及论文撰写。',
+      en: 'The evaluation shows improved video understanding at a comparable input-token cost to uniform sampling, and higher accuracy with fewer input tokens than the query-adaptive keyframe baseline. The manuscript is in preparation; these input-token results are not measurements of end-to-end latency or FLOP savings.',
+      zh: '评测表明，在接近均匀采样的输入 Token 成本下可以提升视频理解准确率；相较查询自适应关键帧基线，则以更少输入 Token 获得更高准确率。目前稿件准备中；这里的输入 Token 结果不等同于端到端时延或 FLOPs 节省。',
     } satisfies L,
-    resources: [
-      { label: { en: 'Read the paper', zh: '阅读论文' } satisfies L, href: 'https://openaccess.thecvf.com/content/CVPR2026F/papers/Gao_Count_What_Repeats_Period-Adaptive_Multi-Scale_Consistency_for_Self-Supervised_Repetitive_Action_CVPRF_2026_paper.pdf' },
-    ],
+    resources: [],
   },
   {
     id: 'frame-sufficiency',
@@ -290,15 +301,41 @@ export const projects = [
       zh: '在 1,336 个 LongVideoBench 验证样本上，对 Qwen2.5-VL 与 LLaVA-Video 度量最小充分帧集，并设计视觉 Token Masking、答案选项评分与嵌套置信度路由——只把不确定的样本升级到更大的帧预算。',
     } satisfies L,
     results: [
-      { k: 'Qwen2.5-VL', v: '−18.0% FLOPs, near-baseline accuracy' },
-      { k: 'LLaVA-Video', v: 'Did not transfer — reported as a limit' },
+      { k: 'Qwen2.5-VL', v: { en: '−18.0% FLOPs · near-baseline accuracy', zh: 'FLOPs −18.0% · 准确率接近基线' } },
+      { k: 'LLaVA-Video', v: { en: 'Gain did not transfer', zh: '收益未迁移，明确适用边界' } },
     ],
     outcome: {
-      en: 'Shipped as a reproducible package: model adapters, automated tests, CI, sanitized experiment artifacts, and full data/licensing documentation. The negative transfer result is reported as prominently as the positive one — a cross-model boundary is a finding, not a failure.',
-      zh: '以可复现工程包交付：模型适配器、自动化测试、CI、脱敏实验产物与完整的数据/许可证说明。跨模型未迁移的结论与正面结果同等醒目地呈现——适用边界本身就是一个发现，而不是一次失败。',
+      en: 'Saved 18.0% FLOPs for Qwen at near-baseline accuracy under an independent-forward-pass cost model; the gain did not transfer to LLaVA. Released model adapters, automated tests, CI, sanitized experiment artifacts, and data/licensing documentation for reproducible evaluation.',
+      zh: '在独立前向计算成本模型下，Qwen 以接近基线的准确率节省 18.0% FLOPs；该收益未迁移至 LLaVA。开源模型适配器、自动化测试、CI、脱敏实验产物与数据/许可证说明，支持可复现评测。',
     } satisfies L,
     resources: [
       { label: { en: 'View on GitHub', zh: '查看仓库' } satisfies L, href: 'https://github.com/maple1999/frame-sufficiency-video-vlms' },
+    ],
+  },
+  {
+    id: 'period-adaptive',
+    title: { en: 'Self-Supervised Counting, Action Quality Assessment & Anomaly Detection', zh: '自监督计数、动作质量评估与异常检测' } satisfies L,
+    kind: { en: "M.Eng. thesis project · Lead", zh: '硕士学位论文课题 · 主要完成人' } satisfies L,
+    period: { en: 'Sep 2024 — Present', zh: '2024.09 — 至今' } satisfies L,
+    accent: 'gold',
+    problem: {
+      en: 'Prior repetitive-counting methods assume a fixed period per video. Real actions accelerate and decelerate mid-sequence, so that assumption fails exactly where counting matters most — and most methods additionally require dense count annotations.',
+      zh: '既有重复计数方法默认单个视频内周期固定。真实动作会在序列中途加速或减速，这个假设恰恰在最需要准确计数的地方失效；同时多数方法还依赖密集的计数标注。',
+    } satisfies L,
+    approach: {
+      en: 'Period-adaptive multi-scale temporal cycle consistency paired with an action-similarity objective, learning repetition structure from unlabeled skeleton sequences, and a multi-expert consensus stage that turns learned structure into a count.',
+      zh: '周期自适应的多尺度时序循环一致性，配合动作相似性目标，从无标注骨架序列中学习重复结构；再由多专家共识流程把学到的结构转换为计数结果。',
+    } satisfies L,
+    results: [
+      { k: 'RepCount', v: '0.129 MAE · 0.842 OBO' },
+      { k: 'Countix', v: '0.098 MAE · 0.879 OBO' },
+    ],
+    outcome: {
+      en: 'Published at CVPR 2026 Findings and awarded a CVPR Compute Gold Star. I led problem formulation, method design, the PyTorch implementation, experiments, ablations, and writing. The research now extends to action quality assessment and abnormal-action detection, with an industry collaboration established to advance technical validation and application in real business settings.',
+      zh: '成果发表于 CVPR 2026 Findings，并获 CVPR Compute Gold Star。我主导问题定义、方法设计、PyTorch 实现、实验、消融分析及论文撰写。在重复动作计数基础上，进一步开展动作质量评估与异常动作检测研究，并建立企业横向合作，推进真实业务场景下的技术验证与应用。',
+    } satisfies L,
+    resources: [
+      { label: { en: 'Read the paper', zh: '阅读论文' } satisfies L, href: 'https://openaccess.thecvf.com/content/CVPR2026F/papers/Gao_Count_What_Repeats_Period-Adaptive_Multi-Scale_Consistency_for_Self-Supervised_Repetitive_Action_CVPRF_2026_paper.pdf' },
     ],
   },
   {
@@ -319,8 +356,8 @@ export const projects = [
       { k: { en: 'Contribution', zh: '承担工作' }, v: { en: 'Shared preprocessing, spatiotemporal representation, training & evaluation pipelines', zh: '共享预处理、时空表征、训练与评测流程' } },
     ],
     outcome: {
-      en: 'The two methodological directions led to two AAAI 2027 submissions, both as first author.',
-      zh: '两条方法路线形成两篇 AAAI 2027 投稿，均为独立一作。',
+      en: 'Contributed problem formulation, implementation and evaluation for ongoing work on skeleton-based action understanding.',
+      zh: '参与骨架动作理解研究的问题定义、代码实现与实验评测。',
     } satisfies L,
     resources: [],
   },
@@ -391,16 +428,16 @@ export const engineering = {
     title: { en: 'Research Engineering & Infrastructure', zh: '科研工程与基础设施' } satisfies L,
     points: [
       {
-        en: 'Maintain shared laboratory GPU servers and allocate compute across concurrent projects — scheduling, environment isolation, and failure triage for the whole group.',
-        zh: '负责实验室共享 GPU 服务器运维与跨项目算力分配——任务调度、环境隔离与故障排查。',
+        en: 'Developed a server management system and an LLM API aggregation platform for the research group; maintain shared GPU servers, coordinate compute allocation, and resolve environment issues.',
+        zh: '为课题组开发服务器管理系统和大模型 API 聚合平台；维护共享 GPU 服务器、协调算力分配并排查环境问题。',
       } satisfies L,
       {
         en: 'Build reproducible training and evaluation pipelines end to end: containerized environments, automated tests, CI, versioned experiment artifacts, and licensing documentation.',
         zh: '端到端构建可复现的训练与评测流程：容器化环境、自动化测试、CI、版本化实验产物与许可证说明。',
       } satisfies L,
       {
-        en: 'Deploy models to resource-constrained edge hardware via ONNX and TensorRT, with explicit FLOP and latency budgets — the engineering core of the on-device sensing work under review at IEEE TMC.',
-        zh: '通过 ONNX 与 TensorRT 将模型部署到资源受限的边缘硬件，并设定明确的 FLOP 与时延预算——这是 IEEE TMC 在投端侧感知工作的工程内核。',
+        en: 'Built the Nano-TCC deployment pipeline from PyTorch through ONNX to TensorRT FP16 on Jetson Orin Nano 8 GB, sustaining approximately 35 FPS and completing a four-hour stability test without crashes. The manuscript is under review at IEEE TMC.',
+        zh: '完成 Nano-TCC 从 PyTorch、ONNX 到 TensorRT FP16 的端侧部署链路，在 Jetson Orin Nano 8 GB 上持续运行约 35 FPS，通过 4 小时无崩溃稳定性测试；论文在 IEEE TMC 审稿中。',
       } satisfies L,
       {
         en: 'This site is part of that habit: statically generated, bilingual, self-hosted on a Tencent Cloud VM behind nginx, deployed by a single scripted command.',
@@ -428,17 +465,6 @@ export const recommendations = [
       zh: '2024 年 9 月起任主要科研导师',
     } satisfies L,
     accent: 'gold',
-    quotes: [
-      {
-        en: 'He independently identified the bottleneck in variable-speed action sequences, conceived the mitigation strategy, and drove the implementation to completion — demonstrating the intellectual autonomy essential for doctoral research.',
-        zh: '他独立定位了变速动作序列中的瓶颈，构思出缓解策略并推动实现落地——展现出博士研究所必需的学术独立性。',
-      } satisfies L,
-      {
-        en: 'Among the master’s researchers I have worked with in recent years, he stands out for his combination of initiative, follow-through, and consideration for colleagues.',
-        zh: '在我近年合作过的硕士研究者中，他在主动性、执行力与对同事的体谅这三者的结合上尤为突出。',
-      } satisfies L,
-    ],
-    letter: '/letters/Recommendation_Jun_Li.pdf',
   },
   {
     name: { en: 'Assoc. Prof. Qiming Li', zh: '李琦铭 副研究员' } satisfies L,
@@ -452,17 +478,6 @@ export const recommendations = [
       zh: '日常科研导师；现有全部论文的通讯作者',
     } satisfies L,
     accent: 'teal',
-    quotes: [
-      {
-        en: 'Across these projects, he has demonstrated the full cycle of problem definition, implementation, deployment, evaluation, and revision.',
-        zh: '在这些项目中，他完整展现了问题定义、实现、部署、评估到修正的全流程能力。',
-      } satisfies L,
-      {
-        en: 'He is willing to resolve infrastructure issues that affect the wider group, even when they are not part of his own immediate experiments.',
-        zh: '即使与自己的实验无关，他也愿意去解决那些影响整个团队的基础设施问题。',
-      } satisfies L,
-    ],
-    letter: '/letters/Recommendation_Qiming_Li.pdf',
   },
 ];
 
@@ -471,7 +486,7 @@ export const recommendations = [
 export const skills = [
   {
     group: { en: 'Video & Multimodal Models', zh: '视频与多模态模型' } satisfies L,
-    items: ['Qwen2.5-VL', 'LLaVA-Video', 'InternVL', 'Transformers', 'LongVideoBench', 'Frame scaling', 'Confidence routing', 'FLOP profiling'],
+    items: ['Qwen3-VL', 'Qwen2.5-VL', 'LLaVA-Video', 'InternVL', 'Transformers', 'Long-video QA', 'Test-time scaling', 'Confidence routing', 'Cross-model evaluation', 'Input-token accounting', 'FLOP analysis'],
   },
   {
     group: { en: 'Deep Learning & Vision', zh: '深度学习与视觉' } satisfies L,
@@ -519,7 +534,7 @@ export const education = [
 /* ------------------------------------------------------------ 荣誉与服务 */
 
 export const honors = [
-  { year: '2026', text: { en: 'CVPR Compute Gold Star — top 5% across Main Track and Findings', zh: 'CVPR Compute Gold Star — 涵盖 Main Track 与 Findings，入选前 5%' } satisfies L, highlight: true },
+  { year: '2026', text: { en: 'CVPR Compute Gold Star', zh: 'CVPR Compute Gold Star' } satisfies L, highlight: true },
   { year: '2025', text: { en: 'Academic Scholarship, Chinese Academy of Sciences', zh: '中国科学院学业奖学金' } satisfies L, highlight: false },
   { year: '2025', text: { en: 'Third Prize, "Huawei Cup" China Graduate Mathematical Contest in Modeling — Team Leader', zh: '"华为杯"中国研究生数学建模竞赛全国三等奖 — 队长' } satisfies L, highlight: false },
   { year: '2018–2022', text: { en: 'Undergraduate academic scholarships; provincial third prizes in "Internet+" and "Challenge Cup"', zh: '本科学业奖学金多次；"互联网+"、"挑战杯"省级三等奖' } satisfies L, highlight: false },
@@ -540,7 +555,7 @@ export const service = [
   },
   {
     title: { en: 'Lab Infrastructure', zh: '实验室基础设施' } satisfies L,
-    text: { en: 'Maintain shared GPU servers and coordinate compute allocation across the group, keeping team workflows reproducible.', zh: '负责实验室共享 GPU 服务器运维与算力分配协调，保障团队工作流可复现。' } satisfies L,
+    text: { en: 'Developed a server management system and an LLM API aggregation platform; maintain shared GPU servers and coordinate compute allocation across the group.', zh: '开发服务器管理系统与大模型 API 聚合平台，维护实验室共享 GPU 服务器并协调团队算力分配。' } satisfies L,
   },
 ];
 
@@ -548,7 +563,7 @@ export const service = [
 
 export const certifications = [
   { en: 'Software Design Engineer — China Computer Technology and Software Professional Qualification (Intermediate)', zh: '软件设计师 — 计算机技术与软件专业技术资格（软考中级）' } satisfies L,
-  { en: 'English — professional working proficiency in technical documentation, academic reading and research writing', zh: '英语 — 具备技术文档、学术阅读与科研写作的专业工作能力' } satisfies L,
+  { en: 'English — academic reading and writing, technical documentation, and everyday communication', zh: '英语 — 学术阅读与写作、技术文档及日常交流' } satisfies L,
 ];
 
 /* -------------------------------------------------------------- 界面文案 */
@@ -564,17 +579,17 @@ export const ui = {
   ],
   sections: {
     research: {
-      eyebrow: { en: 'Research', zh: '研究' } satisfies L,
-      title: { en: 'Three questions I keep returning to', zh: '我反复回到的三个问题' } satisfies L,
+      eyebrow: { en: 'Research interests', zh: '研究兴趣' } satisfies L,
+      title: { en: 'From seeing to reasoning', zh: '从看见，到理解与推理' } satisfies L,
     },
     publications: {
       eyebrow: { en: 'Publications', zh: '论文' } satisfies L,
       title: { en: 'Selected publications', zh: '代表性论文' } satisfies L,
-      publishedLabel: { en: 'Published', zh: '已发表' } satisfies L,
-      underReviewLabel: { en: 'Under review & revision', zh: '在投与返修' } satisfies L,
+      publishedLabel: { en: 'Published / Accepted', zh: '已发表 / 已录用' } satisfies L,
+      underReviewLabel: { en: 'Under review', zh: '在审论文' } satisfies L,
       underReviewNote: {
-        en: 'Titles are withheld while under review, in line with double-blind policy. Full details available on request or in my CV.',
-        zh: '依照双盲评审惯例，在投论文暂不公开具体标题。完整信息可查阅简历或来信索取。',
+        en: 'Ongoing work spans video-language inference and temporal representation learning.',
+        zh: '正在开展视频语言推理与时序表征学习方面的研究。',
       } satisfies L,
       scholarCta: { en: 'All publications on Google Scholar', zh: '在 Google Scholar 查看全部论文' } satisfies L,
     },
@@ -626,8 +641,8 @@ export const ui = {
   },
   footer: {
     built: {
-      en: 'Designed and built by Shizhao Gao. Statically generated with Astro, self-hosted behind nginx.',
-      zh: '由高世钊设计并开发。Astro 静态生成，nginx 自托管。',
+      en: 'Designed and built by Shizhao Gao. Self-hosted behind nginx.',
+      zh: '由高世钊设计并开发，nginx 自托管。',
     } satisfies L,
     rights: { en: 'All rights reserved.', zh: '保留所有权利。' } satisfies L,
   },
